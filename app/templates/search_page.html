@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang='ru'>
+
+<head>
+    <title>Главная страница</title>
+    <base href="http://127.0.0.1:5000/">
+    <meta charset="UTF-8">
+    <link rel="stylesheet" href="static/style.css">
+</head>
+
+<body>
+    <header>
+        <nav id='topmenu'>
+            <a class='intop' href="{{ url_for('login') }}">войти</a>
+            <a class='intop' href="{{ url_for('logout') }}">выйти</a>
+            <a class='intop' href="{{ url_for('signup') }}">регистрация</a>
+            <a class='intop' href="{{ url_for('news') }}">главная</a>
+            <a class='intop' href="{{ url_for('lk') }}">личный кабинет</a>
+        </nav>
+        <form method='POST' action='/search'>
+            <input type='text' id='input_query' name='input_query' spellcheck lang='ru' placeholder="Поиск">
+            <button class='btn' id='btn_query'>Искать</button>
+        </form>
+    </header>
+    <div id='main_box'>
+        <div id='leftbox'>
+            <nav>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из бобовых') }}">Блюда из бобовых</a>
+                </div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из картофеля, овощей и грибов') }}">Блюда
+                        из картофеля, овощей и грибов</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из круп') }}">Блюда из круп</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из макаронных изделий') }}">Блюда из
+                        макаронных изделий</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из мяса и мясных продуктов') }}">Блюда из
+                        мяса и мясных продуктов</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из птицы и кролика') }}">Блюда из птицы и
+                        кролика </a> </div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из рыбы, морепродуктов и раков') }}">Блюда
+                        из рыбы, морепродуктов и раков</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из творога') }}">Блюда из творога </a>
+                </div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Блюда из яиц') }}">Блюда из яиц </a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Гарниры') }}">Гарниры </a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Мучные изделия') }}">Мучные изделия </a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Напитки') }}">Напитки </a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Овощи') }}">Овощи </a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Сладкие блюда') }}">Сладкие блюда</a> </div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Соусы') }}">Соусы</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Супы') }}">Супы</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Фарши') }}">Фарши</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Хлеб, выпечка') }}">Хлеб, выпечка</a></div>
+                <div class='blue_flag'><a class='sidemenu'
+                        href="{{ url_for('searchlink', search_string = 'Холодные блюда') }}">Холодные блюда</a></div>
+            </nav>
+        </div>
+        <div id="midlebox">
+            <form method='POST' action='/favourites'>
+                {% for row in result %}
+                <div class="form-check">
+                    <input type="checkbox" class="check" name="row" id="{{row[1]}}" value="{{row[0]}}">
+                    <label class="form-check-label" for="{{row[1]}}">{{ row[0] }}</label>
+                </div>
+                {% endfor %}
+                <div class="date_option">
+                    <button type="submit" class="btn" id='btn_add' name='btn_add'>Добавить в избранное</button>
+                    <div class="white_block" id="arrow-box"><img id="arrow" src="static/images/right.svg"></div>
+                    <select name='food_type' class="web-f" id="selector">
+                        <option>Авто</option>
+                        <option>Завтрак</option>
+                        <option>Обед</option>
+                        <option>Ужин</option>
+                        <option>Перекус</option>
+                    </select>
+                    <input type="date" name='calendar' class="web-f" value="" id="calendar">
+                    <input type="time" name="timer" class="web-f" value="" id="timer">
+                </div>
+            </form>
+        </div>
+        <div id="rightbox">
+            <div class="white_block" id="profile"><img id='user_img' src='static/images/user3.svg'></div>
+            <div class='white_block' id='name'>
+                <p>Имя пользователя : {{ name }}</p>
+            </div>
+        </div>
+    </div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#arrow').click(function () {
+                $('.web-f').toggle(700);
+            });
+        });
+    </script>
+</body>
+
+</html>

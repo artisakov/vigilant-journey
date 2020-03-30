@@ -1,0 +1,41 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html"  as wtf %}
+
+{% block title %}
+Login
+{% endblock %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<header>
+    <nav id='topmenu'>
+        <a class='intop' href="{{ url_for('login') }}">войти</a>
+        <a class='intop' href="{{ url_for('signup') }}">регистрация</a>
+    </nav>
+</header>
+<div id="p_prldr">
+    <div class="contpre"><span class="svg_anm"></span><br>Подождите<br><small>идет загрузка</small></div>
+</div>
+<div class="container">
+    <form class='form-signin' method="POST" action="/login">
+        <h2 class='form-signin-heading'>Пожалуйста, войдите</h2>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.password) }}
+        {{ wtf.form_field(form.remember) }}
+        <button class='btn btn-lg btn-primary btn-block' type="submit">Вход</button>
+    </form>
+</div>
+<script src='static/javascript/anime.js'></script>
+<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+    integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+    crossorigin="anonymous"></script>
+<script type="text/javascript">$(window).on('load', function () {
+        var $preloader = $('#p_prldr'),
+            $svg_anm = $preloader.find('.svg_anm');
+        $preloader.delay(500).fadeOut('slow');
+    });</script>
+{% endblock %}

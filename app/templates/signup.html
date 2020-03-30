@@ -1,0 +1,29 @@
+{% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+
+{% block title %}
+Sign up
+{% endblock %}
+
+{% block content %}
+
+<head>
+    <link rel="stylesheet" href="static/style.css">
+</head>
+<header>
+    <nav id='topmenu'>
+        <a class='intop' href="{{ url_for('login') }}">войти</a>
+        <a class='intop' href="{{ url_for('signup') }}">регистрация</a>
+    </nav>
+</header>
+<div class="container">
+    <form class="form-signin" method="POST" action="/signup">
+        <h2 class="form-signin-heading">Зарегистрироваться</h2>
+        {{ form.hidden_tag() }}
+        {{ wtf.form_field(form.username) }}
+        {{ wtf.form_field(form.email) }}
+        {{ wtf.form_field(form.password) }}
+        <button class="btn btn-lg btn-primary btn-block" type="submit">Регистрация</button>
+    </form>
+</div>
+{% endblock %}

@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+</head>
+
+<body style="margin: 0; padding: 0;">
+  <header style="height: 60px;">
+    <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="{{ url_for('arch') }}">Архив</a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarNav">
+        <ul class="navbar-nav mr-3">
+          <li class="nav-item active">
+            <a class="nav-link" href="{{ url_for('news') }}">Главная<span class="sr-only">(current)</span></a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('lk') }}">Личный кабинет</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+          </li>
+        </ul>
+        <button type="button" class="btn btn-danger">Отправить врачу</button>
+      </div>
+    </nav>
+  </header>
+  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <div class="card m-3 h-100" style="width: 26rem;">
+      <img src="static/images/img1.jpg" class="card-img-top">
+      <div class="card-body">
+        <h5 class="card-title">Понедельник</h5>
+        <p style="font-size: 1.3rem;">{{m}}</p>
+        <form method="POST" action="/delete">
+          <button type="button" id="toggle" class="btn btn-outline-primary mb-3 mr-3">Выбрать несколько</button>
+          <button type="submit" id="delete" class="btn btn-outline-danger  mb-3" style="display: none;">Удалить</button>
+          <div class="accordion" id="accordionExample">
+            <div class="card">
+              <div class="card-header" id="headingOne">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseOne"
+                    aria-expanded="false">
+                    Завтраки
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne" class="collapse">
+                <div class="card-body">
+                  {%for i in MondayZ%}
+                  <input name="checked" style="display: none;" class="checkbox" type="checkbox" id="{{ i[0] }}"
+                    value="{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}">
+                  <label name="checked" for="{{ i[0] }}">{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingTwo">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseTwo"
+                    aria-expanded="false" aria-controls="collapseTwo">
+                    Обеды
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo" class="collapse">
+                <div class="card-body">
+                  {%for i in MondayO%}
+                  <input name="checked" style="display: none;" class="checkbox" type="checkbox" id="{{ i[0] }}"
+                    value="{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}">
+                  <label name="checked" for="{{ i[0] }}">{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingThree">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
+                    aria-expanded="false" aria-controls="collapseThree">
+                    Ужины
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree" class="collapse">
+                <div class="card-body">
+                  {%for i in MondayY%}
+                  <input name="checked" style="display: none;" class="checkbox" type="checkbox" id="{{ i[0] }}"
+                    value="{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}">
+                  <label name="checked" for="{{ i[0] }}">{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingFour">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour"
+                    aria-expanded="false" aria-controls="collapseFour">
+                    Перекусы
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseFour" class="collapse">
+                <div class="card-body">
+                  {%for i in MondayP%}
+                  <input name="checked" style="display: none;" class="checkbox" type="checkbox" id="{{ i[0] }}"
+                    value="{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}">
+                  <label name="checked" for="{{ i[0] }}">{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card m-3 h-100" style="width: 26rem;">
+      <img src="static/images/img2.jpg" class="card-img-top">
+      <div class="card-body">
+        <h5 class="card-title">Вторник</h5>
+        <p style='font-size: 1.3rem;'>{{t}}</p>
+        <form method="POST" action="/delete">
+          <button type="button" id="toggle1" class="btn btn-outline-primary mb-3 mr-3">Выбрать несколько</button>
+          <button type="submit" id="delete1" class="btn btn-outline-danger mb-3" style="display: none;">Удалить</button>
+          <div class="accordion" id="accordionExample1">
+            <div class="card">
+              <div class="card-header" id="headingOne1">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseOne1" aria-expanded="false" aria-controls="collapseOne1">
+                    Завтраки
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne1" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample1">
+                <div class="card-body">
+                  {%for i in TuesdayZ%}
+                  <input name='checked' style="display: none;" class="checkbox1" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingTwo1">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseTwo1" aria-expanded="false" aria-controls="collapseTwo1">
+                    Обеды
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo1" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample1">
+                <div class="card-body">
+                  {%for i in TuesdayO%}
+                  <input name='checked' style="display: none;" class="checkbox1" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingThree1">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseThree1" aria-expanded="false" aria-controls="collapseThree1">
+                    Ужины
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree1" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample1">
+                <div class="card-body">
+                  {%for i in TuesdayY%}
+                  <input name='checked' style="display: none;" class="checkbox1" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingFour1">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseFour1" aria-expanded="false" aria-controls="collapseFour1">
+                    Перекусы
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseFour1" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample1">
+                <div class="card-body">
+                  {%for i in TuesdayP%}
+                  <input name='checked' style="display: none;" class="checkbox1" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card m-3 h-100" style="width: 26rem;">
+      <img src="static/images/img3.jpg" class="card-img-top">
+      <div class="card-body">
+        <h5 class="card-title">Среда</h5>
+        <p style='font-size: 1.3rem;'>{{w}}</p>
+        <form method="POST" action="/delete">
+          <button type="button" id="toggle2" class="btn btn-outline-primary mb-3 mr-3">Выбрать несколько</button>
+          <button type="submit" id="delete2" class="btn btn-outline-danger mb-3" style="display: none;">Удалить</button>
+          <div class="accordion" id="accordionExample2">
+            <div class="card">
+              <div class="card-header" id="headingOne2">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseOne2" aria-expanded="false" aria-controls="collapseOne2">
+                    Завтраки
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne2" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample2">
+                <div class="card-body">
+                  {%for i in WednesdayZ%}
+                  <input name='checked' style="display: none;" class="checkbox2" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingTwo2">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseTwo2" aria-expanded="false" aria-controls="collapseTwo2">
+                    Обеды
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo2" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample2">
+                <div class="card-body">
+                  {%for i in WednesdayO%}
+                  <input name='checked' style="display: none;" class="checkbox2" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingThree2">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseThree2" aria-expanded="false" aria-controls="collapseThree2">
+                    Ужины
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree2" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample2">
+                <div class="card-body">
+                  {%for i in WednesdayY%}
+                  <input name='checked' style="display: none;" class="checkbox2" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingFour2">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseFour2" aria-expanded="false" aria-controls="collapseFour2">
+                    Перекусы
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseFour2" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample2">
+                <div class="card-body">
+                  {%for i in WednesdayP%}
+                  <input name='checked' style="display: none;" class="checkbox2" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card m-3 h-100" style="width: 26rem;">
+      <img src="static/images/img4.jpg" class="card-img-top">
+      <div class="card-body">
+        <h5 class="card-title">Четверг</h5>
+        <p style='font-size: 1.3rem;'>{{tr}}</p>
+        <form method="POST" action="/delete">
+          <button type="button" id="toggle3" class="btn btn-outline-primary mb-3 mr-3">Выбрать несколько</button>
+          <button type="submit" id="delete3" class="btn btn-outline-danger mb-3" style="display: none;">Удалить</button>
+          <div class="accordion" id="accordionExample3">
+            <div class="card">
+              <div class="card-header" id="headingOne3">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseOne3" aria-expanded="false" aria-controls="collapseOne3">
+                    Завтраки
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne3" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample3">
+                <div class="card-body">
+                  {%for i in ThursdayZ%}
+                  <input name='checked' style="display: none;" class="checkbox3" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingTwo3">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseTwo3" aria-expanded="false" aria-controls="collapseTwo3">
+                    Обеды
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo3" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample3">
+                <div class="card-body">
+                  {%for i in ThursdayO%}
+                  <input name='checked' style="display: none;" class="checkbox3" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingThree3">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseThree3" aria-expanded="false" aria-controls="collapseThree3">
+                    Ужины
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree3" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample3">
+                <div class="card-body">
+                  {%for i in ThursdayY%}
+                  <input name='checked' style="display: none;" class="checkbox3" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingFour3">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseFour3" aria-expanded="false" aria-controls="collapseFour3">
+                    Перекусы
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseFour3" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample3">
+                <div class="card-body">
+                  {%for i in ThursdayP%}
+                  <input name='checked' style="display: none;" class="checkbox3" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card m-3 h-100" style="width: 26rem;">
+      <img src="static/images/img5.jpg" class="card-img-top">
+      <div class="card-body">
+        <h5 class="card-title">Пятница</h5>
+        <p style='font-size: 1.3rem;'>{{fr}}</p>
+        <form method="POST" action="/delete">
+          <button type="button" id="toggle4" class="btn btn-outline-primary mb-3 mr-3">Выбрать несколько</button>
+          <button type="submit" id="delete4" class="btn btn-outline-danger mb-3" style="display: none;">Удалить</button>
+          <div class="accordion" id="accordionExample4">
+            <div class="card">
+              <div class="card-header" id="headingOne4">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseOne4" aria-expanded="false" aria-controls="collapseOne4">
+                    Завтраки
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne4" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample4">
+                <div class="card-body">
+                  {%for i in FridayZ%}
+                  <input name='checked' style="display: none;" class="checkbox4" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingTwo4">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseTwo4" aria-expanded="false" aria-controls="collapseTwo4">
+                    Обеды
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo4" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample4">
+                <div class="card-body">
+                  {%for i in FridayO%}
+                  <input name='checked' style="display: none;" class="checkbox4" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingThree4">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseThree4" aria-expanded="false" aria-controls="collapseThree4">
+                    Ужины
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree4" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample4">
+                <div class="card-body">
+                  {%for i in FridayY%}
+                  <input name='checked' style="display: none;" class="checkbox4" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingFour4">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseFour4" aria-expanded="false" aria-controls="collapseFour4">
+                    Перекусы
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseFour4" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample4">
+                <div class="card-body">
+                  {%for i in FridayP%}
+                  <input name='checked' style="display: none;" class="checkbox4" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card m-3 h-100" style="width: 26rem;">
+      <img src="static/images/img6.jpg" class="card-img-top">
+      <div class="card-body">
+        <h5 class="card-title">Суббота</h5>
+        <p style='font-size: 1.3rem;'>{{st}}</p>
+        <form method="POST" action="/delete">
+          <button type="button" id="toggle5" class="btn btn-outline-primary mb-3 mr-3">Выбрать несколько</button>
+          <button type="submit" id="delete5" class="btn btn-outline-danger mb-3" style="display: none;">Удалить</button>
+          <div class="accordion" id="accordionExample5">
+            <div class="card">
+              <div class="card-header" id="headingOne5">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseOne5" aria-expanded="false" aria-controls="collapseOne5">
+                    Завтраки
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne5" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample5">
+                <div class="card-body">
+                  {%for i in SuterdayZ%}
+                  <input name='checked' style="display: none;" class="checkbox5" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingTwo4">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseTwo5" aria-expanded="false" aria-controls="collapseTwo5">
+                    Обеды
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo5" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample5">
+                <div class="card-body">
+                  {%for i in SuterdayO%}
+                  <input name='checked' style="display: none;" class="checkbox5" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingThree5">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseThree5" aria-expanded="false" aria-controls="collapseThree5">
+                    Ужины
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree5" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample5">
+                <div class="card-body">
+                  {%for i in SuterdayY%}
+                  <input name='checked' style="display: none;" class="checkbox5" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingFour5">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseFour5" aria-expanded="false" aria-controls="collapseFour5">
+                    Перекусы
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseFour5" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample5">
+                <div class="card-body">
+                  {%for i in SuterdayP%}
+                  <input name='checked' style="display: none;" class="checkbox5" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+    <div class="card m-3 h-100" style="width: 26rem;">
+      <img src="static/images/img7.jpg" class="card-img-top">
+      <div class="card-body">
+        <h5 class="card-title">Воскресенье</h5>
+        <p style='font-size: 1.3rem;'>{{sd}}</p>
+        <form method="POST" action="/delete">
+          <button type="button" id="toggle6" class="btn btn-outline-primary mb-3 mr-3">Выбрать несколько</button>
+          <button type="submit" id="delete6" class="btn btn-outline-danger mb-3" style="display: none;">Удалить</button>
+          <div class="accordion" id="accordionExample6">
+            <div class="card">
+              <div class="card-header" id="headingOne4">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseOne6" aria-expanded="false" aria-controls="collapseOne6">
+                    Завтраки
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseOne6" class="collapse" aria-labelledby="headingOne" data-parent="#accordionExample6">
+                <div class="card-body">
+                  {%for i in SundayZ%}
+                  <input name='checked' style="display: none;" class="checkbox6" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingTwo4">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseTwo6" aria-expanded="false" aria-controls="collapseTwo6">
+                    Обеды
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseTwo6" class="collapse" aria-labelledby="headingTwo" data-parent="#accordionExample6">
+                <div class="card-body">
+                  {%for i in SundayO%}
+                  <input name='checked' style="display: none;" class="checkbox6" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingThree4">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseThree6" aria-expanded="false" aria-controls="collapseThree6">
+                    Ужины
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseThree6" class="collapse" aria-labelledby="headingThree" data-parent="#accordionExample6">
+                <div class="card-body">
+                  {%for i in SundayY%}
+                  <input name='checked' style="display: none;" class="checkbox6" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+            <div class="card">
+              <div class="card-header" id="headingFour6">
+                <h5 class="mb-0">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseFour6" aria-expanded="false" aria-controls="collapseFour6">
+                    Перекусы
+                  </button>
+                </h5>
+              </div>
+              <div id="collapseFour6" class="collapse" aria-labelledby="headingFour" data-parent="#accordionExample6">
+                <div class="card-body">
+                  {%for i in SundayP%}
+                  <input name='checked' style="display: none;" class="checkbox6" type='checkbox' id='{{ i[0] }}'
+                    value='{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}'>
+                  <label name='checked' for='{{ i[0] }}'>{{ i[0] }} {{i[2]}}</label><br>
+                  {%endfor%}
+                </div>
+              </div>
+            </div>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+    crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+    integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+    crossorigin="anonymous"></script>
+  <script type="text/javascript">
+    $('#toggle').on('click', function () {
+      $('.accordion .collapse').collapse('toggle');
+      $('.checkbox').toggle(500);
+      $('#delete').slideToggle(100);
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#toggle1').click(function () {
+        $('.checkbox1').toggle(500);
+        $('#delete1').slideToggle(100);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#toggle2').click(function () {
+        $('.checkbox2').toggle(500);
+        $('#delete2').slideToggle(100);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#toggle3').click(function () {
+        $('.checkbox3').toggle(500);
+        $('#delete3').slideToggle(100);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#toggle4').click(function () {
+        $('.checkbox4').toggle(500);
+        $('#delete4').slideToggle(100);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#toggle5').click(function () {
+        $('.checkbox5').toggle(500);
+        $('#delete5').slideToggle(100);
+      });
+    });
+  </script>
+  <script>
+    $(document).ready(function () {
+      $('#toggle6').click(function () {
+        $('.checkbox6').toggle(500);
+        $('#delete6').slideToggle(100);
+      });
+    });
+  </script>
+</body>
+
+</html>
