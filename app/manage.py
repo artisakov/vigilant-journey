@@ -190,7 +190,7 @@ def favour():
             elif now < ujin2 and now > ujin1:
                 select = "Ужин"
             else:
-                select = "Перекусы"
+                select = "Перекус"
 
         path = os.path.dirname(os.path.abspath(__file__))
         db = os.path.join(path, 'diacompanion.db')
