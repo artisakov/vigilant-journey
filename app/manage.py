@@ -553,7 +553,8 @@ def arch():
 def email():
     # ОТправляем отчет по почте (пока что отправляем просто какой-то PDF)
     if request.method == 'GET':
-        msg = Message(recipients=['art.isackov@gmail.com'])
+        msg = Message(recipients=['art.isackov@gmail.com',
+                      'eapustozerov@etu.ru'])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
         msg.body = 'Здесь будет электронный отчет'
         with app.open_resource('static\\images\\ref.pdf') as attach:
