@@ -1,4 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session
+from flask_mail import Mail, Message
 import sqlite3
 import os
 from flask_bootstrap import Bootstrap
@@ -17,11 +18,23 @@ app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
 app.config['SQLALCHEMY_DATABASE_URI'] = \
     'sqlite:///diacompanion.db'
+app.config['TESTING'] = False
+app.config['MAIL_SERVER'] = 'smtp.yandex.ru'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USERNAME'] = 'art.isakow@yandex.ru'
+app.config['MAIL_PASSWORD'] = 'Justice1m'
+app.config['MAIL_DEFAULT_SENDER'] = ('Еженедельник', 'art.isakow@yandex.ru')
+app.config['MAIL_MAX_EMAILS'] = None
+
+app.config['MAIL_ASCII_ATTACHMENTS'] = False
 Bootstrap(app)
 db = SQLAlchemy(app)
 login_manager = LoginManager()
 login_manager.init_app(app)
 login_manager.login_view = 'login'
+mail = Mail(app)
 
 
 class User(UserMixin, db.Model):
@@ -57,12 +70,14 @@ def load_user(user_id):
 
 @app.route('/')
 def zero():
+    # Перенаправляем на страницу входа/регистрации
     return redirect(url_for('login'))
 
 
 @app.route('/news')
 @login_required
 def news():
+    # Главная страница
     session['username'] = current_user.username
     session['date'] = datetime.datetime.today().date()
     return render_template("news.html", name=session['username'])
@@ -71,6 +86,7 @@ def news():
 @app.route('/search_page')
 @login_required
 def search_page():
+    # Поисковая страница
     return render_template("search_page.html", name=session['username'])
 
 
@@ -130,6 +146,7 @@ def search():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    # Авторизация пользователя
     form = LoginForm()
 
     if form.validate_on_submit():
@@ -145,6 +162,7 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    # Регистрация пользователя
     form = RegisterForm()
 
     if form.validate_on_submit():
@@ -162,6 +180,7 @@ def signup():
 @app.route('/logout')
 @login_required
 def logout():
+    # Выход из сети
     logout_user()
     return redirect(url_for('login'))
 
@@ -216,7 +235,7 @@ def favour():
 
         for i in range(len(L1)):
             cur.execute("""INSERT INTO favourites VALUES(?,?,?,?,?,?)""",
-                        (session['user_id'],xx,x,yy,L1[i],select))
+                        (session['user_id'], xx, x, yy, L1[i], select))
             con.commit()
         con.close()
     return redirect(url_for('news'))
@@ -266,7 +285,8 @@ def lk():
                 WHERE user_id = ?
                 AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Monday', 'Завтрак', m))
+                AND datetime = ?""", (session['user_id'], 'Monday',
+                                      'Завтрак', m))
     MondayZ = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ?
@@ -284,28 +304,33 @@ def lk():
                 WHERE user_id = ?
                 AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Monday', 'Перекус', m))
+                AND datetime = ?""", (session['user_id'], 'Monday',
+                                      'Перекус', m))
     MondayP = cur.fetchall()
 
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ? AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Tuesday', 'Завтрак', t))
+                AND datetime = ?""", (session['user_id'], 'Tuesday',
+                                      'Завтрак', t))
     TuesdayZ = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ? AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Tuesday', 'Обед', t))
+                AND datetime = ?""", (session['user_id'], 'Tuesday',
+                                      'Обед', t))
     TuesdayO = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ? AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Tuesday', 'Ужин', t))
+                AND datetime = ?""", (session['user_id'], 'Tuesday',
+                                      'Ужин', t))
     TuesdayY = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ? AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Tuesday', 'Перекус', t))
+                AND datetime = ?""", (session['user_id'], 'Tuesday',
+                                      'Перекус', t))
     TuesdayP = cur.fetchall()
 
     cur.execute(""" SELECT fav,date,time,datetime,type
@@ -319,13 +344,15 @@ def lk():
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Wednesday', 'Обед', w))
+                AND datetime = ?""", (session['user_id'], 'Wednesday',
+                                      'Обед', w))
     WednesdayO = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Wednesday', 'Ужин', w))
+                AND datetime = ?""", (session['user_id'], 'Wednesday',
+                                      'Ужин', w))
     WednesdayY = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
@@ -346,13 +373,15 @@ def lk():
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Thursday', 'Обед', tr))
+                AND datetime = ?""", (session['user_id'], 'Thursday',
+                                      'Обед', tr))
     ThursdayO = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Thursday', 'Ужин', tr))
+                AND datetime = ?""", (session['user_id'], 'Thursday',
+                                      'Ужин', tr))
     ThursdayY = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
@@ -365,22 +394,26 @@ def lk():
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ? AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Friday', 'Завтрак', fr))
+                AND datetime = ?""", (session['user_id'], 'Friday',
+                                      'Завтрак', fr))
     FridayZ = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ? AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Friday', 'Обед', fr))
+                AND datetime = ?""", (session['user_id'], 'Friday',
+                                      'Обед', fr))
     FridayO = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ? AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Friday', 'Ужин', fr))
+                AND datetime = ?""", (session['user_id'], 'Friday',
+                                      'Ужин', fr))
     FridayY = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type FROM favourites
                 WHERE user_id = ? AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Friday', 'Перекус', fr))
+                AND datetime = ?""", (session['user_id'], 'Friday',
+                                      'Перекус', fr))
     FridayP = cur.fetchall()
 
     cur.execute(""" SELECT fav,date,time,datetime,type
@@ -394,13 +427,15 @@ def lk():
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Saturday', 'Обед', st))
+                AND datetime = ?""", (session['user_id'], 'Saturday',
+                                      'Обед', st))
     SaturdayO = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type = ?
-                AND datetime = ?""", (session['user_id'], 'Saturday', 'Ужин', st))
+                AND datetime = ?""", (session['user_id'], 'Saturday',
+                                      'Ужин', st))
     SaturdayY = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
@@ -414,25 +449,29 @@ def lk():
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type =?
-                AND datetime = ?""", (session['user_id'], 'Sunday', 'Завтрак', sd))
+                AND datetime = ?""", (session['user_id'], 'Sunday',
+                                      'Завтрак', sd))
     SundayZ = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type =?
-                AND datetime = ?""", (session['user_id'], 'Sunday', 'Обед', sd))
+                AND datetime = ?""", (session['user_id'], 'Sunday',
+                                      'Обед', sd))
     SundayO = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type =?
-                AND datetime = ?""", (session['user_id'], 'Sunday', 'Ужин', sd))
+                AND datetime = ?""", (session['user_id'], 'Sunday',
+                                      'Ужин', sd))
     SundayY = cur.fetchall()
     cur.execute(""" SELECT fav,date,time,datetime,type
                 FROM favourites WHERE user_id = ?
                 AND date = ?
                 AND type =?
-                AND datetime = ?""", (session['user_id'], 'Sunday', 'Перекус', sd))
+                AND datetime = ?""", (session['user_id'], 'Sunday',
+                                      'Перекус', sd))
     SundayP = cur.fetchall()
     con.close()
 
@@ -477,6 +516,7 @@ def lk():
 @app.route('/delete', methods=['POST'])
 @login_required
 def delete():
+    # Удаление данных из дневника за неделю
     if request.method == 'POST':
         path = os.path.dirname(os.path.abspath(__file__))
         db = os.path.join(path, 'diacompanion.db')
@@ -485,7 +525,10 @@ def delete():
         L = request.form.getlist('checked')
         for i in range(len(L)):
             L1 = L[i].split('/')
-            cur.execute('''DELETE FROM favourites WHERE fav = ? AND datetime = ? AND time = ? AND type = ? ''',(L1[0],L1[1],L1[2],L1[3]))
+            cur.execute('''DELETE FROM favourites WHERE fav = ?
+                        AND datetime = ?
+                        AND time = ?
+                        AND type = ? ''', (L1[0], L1[1], L1[2], L1[3]))
         con.commit()
         con.close()
     return redirect(url_for('lk'))
@@ -494,7 +537,7 @@ def delete():
 @app.route('/arch')
 @login_required
 def arch():
-#   Архив за все время
+    # Архив за все время
     path = os.path.dirname(os.path.abspath(__file__))
     db = os.path.join(path, 'diacompanion.db')
     con = sqlite3.connect(db)
@@ -502,7 +545,23 @@ def arch():
     cur.execute("""SELECT date,datetime,time,fav,type FROM favourites""")
     L = cur.fetchall()
     con.close()
-    return render_template('arch.html',L=L)
+    return render_template('arch.html', L=L)
+
+
+@app.route('/email', methods=['GET'])
+@login_required
+def email():
+    # ОТправляем отчет по почте (пока что отправляем просто какой-то PDF)
+    if request.method == 'GET':
+        msg = Message(recipients=['art.isackov@gmail.com'])
+        msg.subject = "Никнейм пользователя: %s" % session["username"]
+        msg.body = 'Здесь будет электронный отчет'
+        with app.open_resource('static\\images\\ref.pdf') as attach:
+            msg.attach('ref.pdf', 'Portable Document Format/pdf',
+                       attach.read())
+        mail.send(msg)
+    return redirect(url_for('lk'))
+
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -27,7 +27,9 @@
             <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
           </li>
         </ul>
-        <button type="button" class="btn btn-danger">Отправить врачу</button>
+        <form action="/email" method="GET">
+          <button type="submit" class="btn btn-danger">Отправить врачу</button>
+        </form>
       </div>
     </nav>
   </header>
@@ -82,8 +84,8 @@
             <div class="card">
               <div class="card-header" id="headingThree">
                 <h5 class="mb-0">
-                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseThree"
-                    aria-expanded="false" aria-controls="collapseThree">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseThree" aria-expanded="false" aria-controls="collapseThree">
                     Ужины
                   </button>
                 </h5>
@@ -101,8 +103,8 @@
             <div class="card">
               <div class="card-header" id="headingFour">
                 <h5 class="mb-0">
-                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse" data-target="#collapseFour"
-                    aria-expanded="false" aria-controls="collapseFour">
+                  <button class="btn btn-link collapsed" type="button" data-toggle="collapse"
+                    data-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
                     Перекусы
                   </button>
                 </h5>
