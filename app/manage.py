@@ -564,16 +564,16 @@ def email():
         con.close()
         s = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время',
                                      'Избранное', 'Тип'])
-        writer = pd.ExcelWriter('app\\Отчет.xlsx', engine='xlsxwriter')
+        writer = pd.ExcelWriter('app\\table.xlsx', engine='xlsxwriter')
         s.to_excel(writer, 'Sheet1')
         writer.save()
 
         msg = Message(recipients=['art.isackov@gmail.com',
                       'eapustozerov@etu.ru'])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
-        msg.body = 'Здесь будет электронный отчет'
-        with app.open_resource('Отчет.xlsx') as attach:
-            msg.attach('Отчет.xlsx', 'table/xlsx',
+        msg.body = 'Электронный отчет'
+        with app.open_resource('table.xlsx') as attach:
+            msg.attach('table.xlsx', 'Microsoft Excel Worksheet/xlsx',
                        attach.read())
         mail.send(msg)
 
