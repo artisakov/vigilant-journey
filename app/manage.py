@@ -568,12 +568,11 @@ def email():
         s.to_excel(writer, 'Sheet1')
         writer.save()
 
-        msg = Message(recipients=['art.isackov@gmail.com',
-                      'eapustozerov@etu.ru'])
+        msg = Message(recipients=['art.isackov@gmail.com'])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
         msg.body = 'Электронный отчет'
         with app.open_resource('table.xlsx') as attach:
-            msg.attach('table.xlsx', 'Microsoft Excel Worksheet/xlsx',
+            msg.attach('table.xlsx', 'Sheet/xlsx',
                        attach.read())
         mail.send(msg)
 
