@@ -553,27 +553,29 @@ def arch():
 @app.route('/email', methods=['GET'])
 @login_required
 def email():
-    # Отправляем отчет по почте (пока что отправляем просто какой-то PDF)
+    # Отправляем отчет по почте отчет
     if request.method == 'GET':
         path = os.path.dirname(os.path.abspath(__file__))
         db = os.path.join(path, 'diacompanion.db')
         con = sqlite3.connect(db)
         cur = con.cursor()
-        cur.execute('''SELECT date,datetime,time,fav,type FROM favourites''')
+        print(session)
+        cur.execute('''SELECT date,datetime,time,fav,type FROM favourites
+                    WHERE user_id = ?''', (session['user_id'],))
         L = cur.fetchall()
         con.close()
+
         s = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время',
                                      'Избранное', 'Тип'])
-        writer = pd.ExcelWriter('app\\table.xlsx', engine='xlsxwriter')
+        writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"], engine='xlsxwriter') 
         s.to_excel(writer, 'Sheet1')
         writer.save()
 
-        msg = Message(recipients=['art.isackov@gmail.com',
-                                  'eupustozerov@etu.ru'])
+        msg = Message(recipients=['art.isackov@gmail.com'])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
         msg.body = 'Электронный отчет'
-        with app.open_resource('table.xlsx') as attach:
-            msg.attach('table.xlsx', 'Sheet/xlsx',
+        with app.open_resource('%s.xlsx' % session["username"]) as attach:
+            msg.attach('%s.xlsx' % session["username"], 'Sheet/xlsx',
                        attach.read())
         mail.send(msg)
 
