@@ -13,6 +13,8 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import datetime
 import time
 from time import strftime
+import pandas as pd
+import xlsxwriter
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -551,16 +553,30 @@ def arch():
 @app.route('/email', methods=['GET'])
 @login_required
 def email():
-    # ОТправляем отчет по почте (пока что отправляем просто какой-то PDF)
+    # Отправляем отчет по почте (пока что отправляем просто какой-то PDF)
     if request.method == 'GET':
+        path = os.path.dirname(os.path.abspath(__file__))
+        db = os.path.join(path, 'diacompanion.db')
+        con = sqlite3.connect(db)
+        cur = con.cursor()
+        cur.execute('''SELECT date,datetime,time,fav,type FROM favourites''')
+        L = cur.fetchall()
+        con.close()
+        s = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время',
+                                     'Избранное', 'Тип'])
+        writer = pd.ExcelWriter('app\\Отчет.xlsx', engine='xlsxwriter')
+        s.to_excel(writer, 'Sheet1')
+        writer.save()
+
         msg = Message(recipients=['art.isackov@gmail.com',
                       'eapustozerov@etu.ru'])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
         msg.body = 'Здесь будет электронный отчет'
-        with app.open_resource('static\\images\\ref.pdf') as attach:
-            msg.attach('ref.pdf', 'Portable Document Format/pdf',
+        with app.open_resource('Отчет.xlsx') as attach:
+            msg.attach('Отчет.xlsx', 'table/xlsx',
                        attach.read())
         mail.send(msg)
+
     return redirect(url_for('lk'))
 
 
