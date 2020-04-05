@@ -568,7 +568,8 @@ def email():
         s.to_excel(writer, 'Sheet1')
         writer.save()
 
-        msg = Message(recipients=['art.isackov@gmail.com'])
+        msg = Message(recipients=['art.isackov@gmail.com',
+                                  'eupustozerov@etu.ru'])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
         msg.body = 'Электронный отчет'
         with app.open_resource('table.xlsx') as attach:
