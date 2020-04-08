@@ -229,15 +229,32 @@ def favour():
         date = request.form['calendar']
         if date == "":
             x = datetime.datetime.today().date()
+            xy = x.strftime("%d-%m-%Y")
             xx = x.strftime("%A")
         else:
             x = datetime.datetime.strptime(date, "%Y-%m-%d")
             x = x.date()
+            xy = x.strftime("%d-%m-%Y")
             xx = x.strftime("%A")
+
+        if xx == 'Monday':
+            xx = 'Понедельник'
+        elif xx == 'Tuesday':
+            xx = 'Вторник'
+        elif xx == 'Wednesday':
+            xx = 'Среда'
+        elif xx == 'Thursday':
+            xx = 'Четверг'
+        elif xx == 'Friday':
+            xx = 'Пятница'
+        elif xx == 'Saturday':
+            xx = 'Суббота'
+        else:
+            xx = 'Воскресенье'    
 
         for i in range(len(L1)):
             cur.execute("""INSERT INTO favourites VALUES(?,?,?,?,?,?)""",
-                        (session['user_id'], xx, x, yy, L1[i], select))
+                        (session['user_id'], xx, xy, yy, L1[i], select))
             con.commit()
         con.close()
     return redirect(url_for('news'))
@@ -559,7 +576,6 @@ def email():
         db = os.path.join(path, 'diacompanion.db')
         con = sqlite3.connect(db)
         cur = con.cursor()
-        print(session)
         cur.execute('''SELECT date,datetime,time,fav,type FROM favourites
                     WHERE user_id = ?''', (session['user_id'],))
         L = cur.fetchall()
@@ -567,6 +583,8 @@ def email():
 
         s = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время',
                                      'Избранное', 'Тип'])
+        s = s.groupby(['День недели','Дата','Тип','Время'])['Избранное'].apply(lambda tags: ','.join(tags))
+        print(s)                             
         writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"], engine='xlsxwriter') 
         s.to_excel(writer, 'Sheet1')
         writer.save()
