@@ -585,12 +585,14 @@ def email():
         L = cur.fetchall()
         con.close()
 
-        s = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время','Тип',
-                                     'Избранное', 'Вес'])
-        s = s.groupby(['День недели','Дата','Тип','Время'])['Избранное'].apply(lambda tags: ', '.join(tags))
-        print(s)
+        food_weight = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время','Тип',
+                                     'Избранное', 'Вес'])              
+        food_weight['Еда'] = food_weight[['Избранное','Вес']].apply(lambda tags: ' - '.join(tags), axis = 1)
+        del food_weight['Избранное']
+        del food_weight['Вес']
+        food_weight = food_weight.groupby(['День недели','Дата','Тип','Время'])['Еда'].apply(lambda tags: ', '.join(tags))
         writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"], engine='xlsxwriter') 
-        s.to_excel(writer, 'Sheet1')
+        food_weight.to_excel(writer, 'Sheet1')
         writer.save()
 
         msg = Message(recipients=['art.isackov@gmail.com'])
@@ -599,7 +601,7 @@ def email():
         with app.open_resource('%s.xlsx' % session["username"]) as attach:
             msg.attach('%s.xlsx' % session["username"], 'Sheet/xlsx',
                        attach.read())
-        #mail.send(msg)
+        mail.send(msg)
 
     return redirect(url_for('lk'))
 
