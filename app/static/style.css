@@ -330,7 +330,7 @@ header{
     text-align:center;
     line-height:35px;
 }
-     
+ 
 #p_prldr .svg_anm {
     position: absolute;
     width: 41px;
@@ -385,6 +385,15 @@ header{
     border-radius: 4px;
     width: 80px;
     height: 27px;
+    border-width: 0px;
+    display: none;
+}
+#libra{
+    margin-top: 10px  !important;
+    margin: 0px 5px;
+    border-radius: 4px;
+    width: 80px;
+    height: 25px;
     border-width: 0px;
     display: none;
 }
