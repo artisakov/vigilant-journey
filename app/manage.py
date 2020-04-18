@@ -586,13 +586,16 @@ def email():
         con.close()
 
         food_weight = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время','Тип',
-                                     'Избранное', 'Вес'])              
+                                     'Избранное', 'Вес']) 
+        print(food_weight)
+        a = food_weight.groupby(['День недели','Дата','Тип','Время']).agg({"Избранное": lambda tags: ','.join(tags),
+                    "Вес": lambda tags: ','.join(tags)})
         food_weight['Еда'] = food_weight[['Избранное','Вес']].apply(lambda tags: ' - '.join(tags), axis = 1)
         del food_weight['Избранное']
         del food_weight['Вес']
         food_weight = food_weight.groupby(['День недели','Дата','Тип','Время'])['Еда'].apply(lambda tags: ', '.join(tags))
         writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"], engine='xlsxwriter') 
-        food_weight.to_excel(writer, 'Sheet1')
+        a.to_excel(writer, 'Отчет по еде')
         writer.save()
 
         msg = Message(recipients=['art.isackov@gmail.com'])
