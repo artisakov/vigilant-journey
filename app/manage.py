@@ -15,6 +15,9 @@ import time
 from time import strftime
 import pandas as pd
 import xlsxwriter
+import openpyxl
+from openpyxl import Workbook
+from openpyxl.styles import Alignment
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -26,7 +29,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = 'dnewnike@yandex.ru'
-app.config['MAIL_PASSWORD'] = '65T4ZpKa3X8q6Pg'
+app.config['MAIL_PASSWORD'] = 'uVDLZcDy9S2dbry'
 app.config['MAIL_DEFAULT_SENDER'] = ('Еженедельник', 'dnewnike@yandex.ru')
 app.config['MAIL_MAX_EMAILS'] = None
 
@@ -598,14 +601,38 @@ def email():
         con.close()
 
         food_weight = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время', 'Тип',
-                                               'Избранное', 'Вес', 'Уровень сахара до', 'Уровень сахара после'])
-        print(food_weight)
-        a = food_weight.groupby(['День недели', 'Дата', 'Тип', 'Уровень сахара до', 'Уровень сахара после', 'Время']).agg({"Избранное": lambda tags: '/'.join(tags),
-                                                                                                                           "Вес": lambda tags: '/'.join(tags)})
+                                               'Избранное', 'Масса (в граммах)', 'Уровень сахара до', 'Уровень сахара после'])
+        pd.set_option('max_colwidth', 120)
+        pd.set_option('display.width', 500)
+        a = food_weight.groupby(['День недели', 'Дата', 'Тип', 'Уровень сахара до', 'Уровень сахара после', 'Время']).agg({"Избранное": lambda tags: ', '.join(tags),
+                                                                                                                           "Масса (в граммах)": lambda tags: ', '.join(tags)})
         writer = pd.ExcelWriter('app\\%s.xlsx' %
                                 session["username"], engine='xlsxwriter')                            
         a.to_excel(writer, sheet_name='Приемы пищи')
+        # Альтернативный метод
+        #workbook = writer.book
+        #worksheet = writer.sheets['Приемы пищи']
+        #worksheet.set_column('A:F', 20)
+        #worksheet.set_column('G:G', 70)
+        #worksheet.set_column('H:H', 20)
         writer.save()
+
+        wb=openpyxl.load_workbook('app\\%s.xlsx' %session['username'])
+        sheet = wb['Приемы пищи']
+        ws=wb.active
+        for row in ws.iter_rows():
+            for cell in row:      
+                cell.alignment =  cell.alignment.copy(wrapText=True)
+                cell.alignment =  cell.alignment.copy(vertical='center')
+        sheet.column_dimensions['A'].width = 13
+        sheet.column_dimensions['B'].width = 13
+        sheet.column_dimensions['C'].width = 13
+        sheet.column_dimensions['D'].width = 20
+        sheet.column_dimensions['E'].width = 20
+        sheet.column_dimensions['F'].width = 13
+        sheet.column_dimensions['G'].width = 50  
+        sheet.column_dimensions['H'].width = 20
+        wb.save('app\\%s.xlsx' % session["username"])
 
         msg = Message(recipients=['art.isackov@gmail.com'])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
