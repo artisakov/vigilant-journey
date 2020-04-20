@@ -80,37 +80,35 @@
                     <label class="form-check-label" for="{{row[1]}}">{{ row[0] }}</label>
                 </div>
                 {% endfor %}
-                <div class="date_option">
-                    <button type="submit" class="btn" id='btn_add' name='btn_add'>Добавить в избранное</button>
-                    <div class="white_block" id="arrow-box"><img id="arrow" src="static/images/right.svg"></div>
-                    <select name='food_type' class="web-f" id="selector">
-                        <option>Авто</option>
-                        <option>Завтрак</option>
-                        <option>Обед</option>
-                        <option>Ужин</option>
-                        <option>Перекус</option>
-                    </select>
-                    <input type="date" name='calendar' class="web-f" value="" id="calendar">
-                    <input type="time" name="timer" class="web-f" value="" id="timer">
-                    <input type="number" name="libra" class="web-f" value="" id="libra">
+                <div class="button_add">                 
+                        <button type="submit" class="btn" id='btn_add' name='btn_add'>Добавить в избранное</button>
+                </div>
+                <div class="param">
+                    <div style="display: flex; flex-direction: row;"><p style="margin-right: 10px;">Введите дату</p><span></span><input type="date" name='calendar' value="" id="calendar"></div>
+                    <div style="display: flex; flex-direction: row;"><p style="margin-right: 10px;">Укажите прием пищи</p><span></span>
+                        <select name='food_type' id="selector">
+                                <option>Авто</option>
+                                <option>Завтрак</option>
+                                <option>Обед</option>
+                                <option>Ужин</option>
+                                <option>Перекус</option>
+                        </select>
+                    </div>
+                    <div style="display: flex; flex-direction: row;"><p style="margin-right: 10px;">Установите время</p><input type="time" name="timer" value="" id="timer"></div>
+                    <div style="display: flex; flex-direction: row;"><p style="margin-right: 10px;">Вес (в граммах)  </p><input type="number" name="libra" value="" id="libra"></div>
+                    <div style="display: flex; flex-direction: row;"><p style="margin-right: 10px;">Сахар до приема пищи</p><input type="number" name="index_b" value="" id="index_b"></div>
+                    <div style="display: flex; flex-direction: row;"><p style="margin-right: 10px;">После приема пищи</p><input type="number" name="index_a" value="" id="index_a"></div>
                 </div>
             </form>
         </div>
         <div id="rightbox">
             <div class="white_block" id="profile"><img id='user_img' src='static/images/user3.svg'></div>
             <div class='white_block' id='name'>
-                <p>Имя пользователя : {{ name }}</p>
+                <p style='color: black;'>Имя пользователя : {{ name }}</p>
             </div>
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
-    <script>
-        $(document).ready(function () {
-            $('#arrow').click(function () {
-                $('.web-f').toggle(700);
-            });
-        });
-    </script>
 </body>
 
 </html>

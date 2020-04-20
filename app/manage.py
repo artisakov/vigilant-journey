@@ -25,9 +25,9 @@ app.config['MAIL_SERVER'] = 'smtp.yandex.ru'
 app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USERNAME'] = 'art.isakow@yandex.ru'
-app.config['MAIL_PASSWORD'] = '***пароль***'
-app.config['MAIL_DEFAULT_SENDER'] = ('Еженедельник', 'art.isakow@yandex.ru')
+app.config['MAIL_USERNAME'] = 'dnewnike@yandex.ru'
+app.config['MAIL_PASSWORD'] = '65T4ZpKa3X8q6Pg'
+app.config['MAIL_DEFAULT_SENDER'] = ('Еженедельник', 'dnewnike@yandex.ru')
 app.config['MAIL_MAX_EMAILS'] = None
 
 app.config['MAIL_ASCII_ATTACHMENTS'] = False
@@ -251,14 +251,25 @@ def favour():
             week_day = 'Суббота'
         else:
             week_day = 'Воскресенье'
-            
+
         libra = request.form['libra']
         if libra == "":
-            libra = "200"
+            libra = "150"
+
+        index_b = request.form['index_b']
+        if index_b == "":
+            index_b = "3,88"
+
+        index_a = request.form['index_a']
+        if index_a == "":
+            index_a = "6,88"
+
+        cur.execute(""" SELECT name FROM constant_food""")
+        category_a = cur.fetchall()
 
         for i in range(len(L1)):
-            cur.execute("""INSERT INTO favourites VALUES(?,?,?,?,?,?,?)""",
-                        (session['user_id'], week_day, date, time, typ, L1[i], libra))
+            cur.execute("""INSERT INTO favourites VALUES(?,?,?,?,?,?,?,?,?)""",
+                        (session['user_id'], week_day, date, time, typ, L1[i], libra, index_b, index_a))
             con.commit()
         con.close()
     return redirect(url_for('news'))
@@ -279,7 +290,7 @@ def lk():
         delta = datetime.timedelta(3)
     elif td.strftime("%A") == 'Friday':
         delta = datetime.timedelta(4)
-    elif td.strftime("%A") == 'Suterday':
+    elif td.strftime("%A") == 'Saturday':
         delta = datetime.timedelta(5)
     else:
         delta = datetime.timedelta(6)
@@ -309,7 +320,7 @@ def lk():
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Понедельник',
-                                      'Завтрак', M))
+                                  'Завтрак', M))
     MondayZ = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ?
@@ -328,32 +339,32 @@ def lk():
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Понедельник',
-                                      'Перекус', M))
+                                  'Перекус', M))
     MondayP = cur.fetchall()
 
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ? AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Вторник',
-                                      'Завтрак', T))
+                                  'Завтрак', T))
     TuesdayZ = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ? AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Вторник',
-                                      'Обед', T))
+                                  'Обед', T))
     TuesdayO = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ? AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Вторник',
-                                      'Ужин', T))
+                                  'Ужин', T))
     TuesdayY = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ? AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Вторник',
-                                      'Перекус', T))
+                                  'Перекус', T))
     TuesdayP = cur.fetchall()
 
     cur.execute(""" SELECT food,week_day,time,date,type
@@ -361,28 +372,28 @@ def lk():
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Среда',
-                                      'Завтрак', W))
+                                  'Завтрак', W))
     WednesdayZ = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Среда',
-                                      'Обед', W))
+                                  'Обед', W))
     WednesdayO = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Среда',
-                                      'Ужин', W))
+                                  'Ужин', W))
     WednesdayY = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Среда',
-                                      'Перекус', W))
+                                  'Перекус', W))
     WednesdayP = cur.fetchall()
 
     cur.execute(""" SELECT food,week_day,time,date,type
@@ -390,53 +401,53 @@ def lk():
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Четверг',
-                                      'Завтрак', TR))
+                                  'Завтрак', TR))
     ThursdayZ = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Четверг',
-                                      'Обед', TR))
+                                  'Обед', TR))
     ThursdayO = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Четверг',
-                                      'Ужин', TR))
+                                  'Ужин', TR))
     ThursdayY = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Четверг',
-                                      'Перекус', TR))
+                                  'Перекус', TR))
     ThursdayP = cur.fetchall()
 
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ? AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Пятница',
-                                      'Завтрак', FR))
+                                  'Завтрак', FR))
     FridayZ = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ? AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Пятница',
-                                      'Обед', FR))
+                                  'Обед', FR))
     FridayO = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ? AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Пятница',
-                                      'Ужин', FR))
+                                  'Ужин', FR))
     FridayY = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ? AND week_day = ?
                 AND type = ?
                 AND date= ?""", (session['user_id'], 'Пятница',
-                                      'Перекус', FR))
+                                 'Перекус', FR))
     FridayP = cur.fetchall()
 
     cur.execute(""" SELECT food,week_day,time,date,type
@@ -444,28 +455,28 @@ def lk():
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Суббота',
-                                      'Завтрак', ST))
+                                  'Завтрак', ST))
     SaturdayZ = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Суббота',
-                                      'Обед', ST))
+                                  'Обед', ST))
     SaturdayO = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Суббота',
-                                      'Ужин', ST))
+                                  'Ужин', ST))
     SaturdayY = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
                 AND date = ?""", (session['user_id'], 'Суббота',
-                                      'Перекус', ST))
+                                  'Перекус', ST))
     SaturdayP = cur.fetchall()
 
     cur.execute(""" SELECT food,week_day,time,date,type
@@ -473,28 +484,28 @@ def lk():
                 AND week_day = ?
                 AND type =?
                 AND date = ?""", (session['user_id'], 'Воскресенье',
-                                      'Завтрак', SD))
+                                  'Завтрак', SD))
     SundayZ = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type =?
                 AND date = ?""", (session['user_id'], 'Воскресенье',
-                                      'Обед', SD))
+                                  'Обед', SD))
     SundayO = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type =?
                 AND date = ?""", (session['user_id'], 'Воскресенье',
-                                      'Ужин', SD))
+                                  'Ужин', SD))
     SundayY = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type
                 FROM favourites WHERE user_id = ?
                 AND week_day = ?
                 AND type =?
                 AND date = ?""", (session['user_id'], 'Воскресенье',
-                                      'Перекус', SD))
+                                  'Перекус', SD))
     SundayP = cur.fetchall()
     con.close()
 
@@ -565,7 +576,8 @@ def arch():
     db = os.path.join(path, 'diacompanion.db')
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute("""SELECT week_day,date,time,food,type FROM favourites""")
+    cur.execute(
+        """SELECT week_day,date,time,food,libra,type,index_b,index_a FROM favourites""")
     L = cur.fetchall()
     con.close()
     return render_template('arch.html', L=L)
@@ -580,22 +592,19 @@ def email():
         db = os.path.join(path, 'diacompanion.db')
         con = sqlite3.connect(db)
         cur = con.cursor()
-        cur.execute('''SELECT week_day,date,time,type,food,libra FROM favourites
+        cur.execute('''SELECT week_day,date,time,type,food,libra,index_b,index_a FROM favourites
                     WHERE user_id = ?''', (session['user_id'],))
         L = cur.fetchall()
         con.close()
 
-        food_weight = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время','Тип',
-                                     'Избранное', 'Вес']) 
+        food_weight = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время', 'Тип',
+                                               'Избранное', 'Вес', 'Уровень сахара до', 'Уровень сахара после'])
         print(food_weight)
-        a = food_weight.groupby(['День недели','Дата','Тип','Время']).agg({"Избранное": lambda tags: ','.join(tags),
-                    "Вес": lambda tags: ','.join(tags)})
-        food_weight['Еда'] = food_weight[['Избранное','Вес']].apply(lambda tags: ' - '.join(tags), axis = 1)
-        del food_weight['Избранное']
-        del food_weight['Вес']
-        food_weight = food_weight.groupby(['День недели','Дата','Тип','Время'])['Еда'].apply(lambda tags: ', '.join(tags))
-        writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"], engine='xlsxwriter') 
-        a.to_excel(writer, 'Отчет по еде')
+        a = food_weight.groupby(['День недели', 'Дата', 'Тип', 'Уровень сахара до', 'Уровень сахара после', 'Время']).agg({"Избранное": lambda tags: '/'.join(tags),
+                                                                                                                           "Вес": lambda tags: '/'.join(tags)})
+        writer = pd.ExcelWriter('app\\%s.xlsx' %
+                                session["username"], engine='xlsxwriter')                            
+        a.to_excel(writer, sheet_name='Приемы пищи')
         writer.save()
 
         msg = Message(recipients=['art.isackov@gmail.com'])
