@@ -18,6 +18,7 @@ import xlsxwriter
 import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Alignment
+from openpyxl.styles.borders import Border, Side
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -29,7 +30,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = 'dnewnike@yandex.ru'
-app.config['MAIL_PASSWORD'] = 'uVDLZcDy9S2dbry'
+app.config['MAIL_PASSWORD'] = ''
 app.config['MAIL_DEFAULT_SENDER'] = ('Еженедельник', 'dnewnike@yandex.ru')
 app.config['MAIL_MAX_EMAILS'] = None
 
@@ -232,12 +233,12 @@ def favour():
         date = request.form['calendar']
         if date == "":
             y = datetime.datetime.today().date()
-            date = y.strftime("%d-%m-%Y")
+            date = y.strftime("%d.%m.%Y")
             week_day = y.strftime("%A")
         else:
             y = datetime.datetime.strptime(date, "%Y-%m-%d")
             y = y.date()
-            date = y.strftime("%d-%m-%Y")
+            date = y.strftime("%d.%m.%Y")
             week_day = y.strftime("%A")
 
         if week_day == 'Monday':
@@ -261,11 +262,11 @@ def favour():
 
         index_b = request.form['index_b']
         if index_b == "":
-            index_b = "3,88"
+            index_b = "3.88"
 
         index_a = request.form['index_a']
         if index_a == "":
-            index_a = "6,88"
+            index_a = "6.88"
 
         cur.execute(""" SELECT name FROM constant_food""")
         category_a = cur.fetchall()
@@ -299,19 +300,19 @@ def lk():
         delta = datetime.timedelta(6)
 
     m = td - delta
-    M = m.strftime("%d-%m-%Y")
+    M = m.strftime("%d.%m.%Y")
     t = m + datetime.timedelta(1)
-    T = t.strftime("%d-%m-%Y")
+    T = t.strftime("%d.%m.%Y")
     w = m + datetime.timedelta(2)
-    W = w.strftime("%d-%m-%Y")
+    W = w.strftime("%d.%m.%Y")
     tr = m + datetime.timedelta(3)
-    TR = tr.strftime("%d-%m-%Y")
+    TR = tr.strftime("%d.%m.%Y")
     fr = m + datetime.timedelta(4)
-    FR = fr.strftime("%d-%m-%Y")
+    FR = fr.strftime("%d.%m.%Y")
     st = m + datetime.timedelta(5)
-    ST = st.strftime("%d-%m-%Y")
+    ST = st.strftime("%d.%m.%Y")
     sd = m + datetime.timedelta(6)
-    SD = sd.strftime("%d-%m-%Y")
+    SD = sd.strftime("%d.%m.%Y")
 
     path = os.path.dirname(os.path.abspath(__file__))
     db = os.path.join(path, 'diacompanion.db')
@@ -586,11 +587,13 @@ def arch():
     return render_template('arch.html', L=L)
 
 
-@app.route('/email', methods=['GET'])
+@app.route('/email', methods=['GET','POST'])
 @login_required
 def email():
     # Отправляем отчет по почте отчет
-    if request.method == 'GET':
+    if request.method == 'POST':
+        mail1 = request.form.getlist('email_sendto')
+
         path = os.path.dirname(os.path.abspath(__file__))
         db = os.path.join(path, 'diacompanion.db')
         con = sqlite3.connect(db)
@@ -600,21 +603,19 @@ def email():
         L = cur.fetchall()
         con.close()
 
-        food_weight = pd.DataFrame(L, columns=['День недели', 'Дата', 'Время', 'Тип',
-                                               'Избранное', 'Масса (в граммах)', 'Уровень сахара до', 'Уровень сахара после'])
-        pd.set_option('max_colwidth', 120)
-        pd.set_option('display.width', 500)
-        a = food_weight.groupby(['День недели', 'Дата', 'Тип', 'Уровень сахара до', 'Уровень сахара после', 'Время']).agg({"Избранное": lambda tags: ', '.join(tags),
-                                                                                                                           "Масса (в граммах)": lambda tags: ', '.join(tags)})
+        food_weight = pd.DataFrame(L, columns=['День','Дата', 'Время', 'Тип',
+                                               'Продукт', 'Масса (в граммах)', 'Уровень сахара до', 'Уровень сахара после'])
+        food_weight = food_weight.drop('День', axis=1)
+        food_weight['Уровень сахара до'] = pd.to_numeric(food_weight['Уровень сахара до'])
+        food_weight['Уровень сахара после'] = pd.to_numeric(food_weight['Уровень сахара после'])
+
+        a = food_weight.groupby(['Дата', 'Тип', 'Уровень сахара до', 'Уровень сахара после', 'Время']).agg({"Продукт": lambda tags: '\n'.join(tags),
+                                                                                                                           "Масса (в граммах)": lambda tags: '\n'.join(tags)})
+        a['Масса (в граммах)'] = pd.to_numeric(a['Масса (в граммах)'],errors='ignore')
+
         writer = pd.ExcelWriter('app\\%s.xlsx' %
                                 session["username"], engine='xlsxwriter')                            
         a.to_excel(writer, sheet_name='Приемы пищи')
-        # Альтернативный метод
-        #workbook = writer.book
-        #worksheet = writer.sheets['Приемы пищи']
-        #worksheet.set_column('A:F', 20)
-        #worksheet.set_column('G:G', 70)
-        #worksheet.set_column('H:H', 20)
         writer.save()
 
         wb=openpyxl.load_workbook('app\\%s.xlsx' %session['username'])
@@ -624,17 +625,28 @@ def email():
             for cell in row:      
                 cell.alignment =  cell.alignment.copy(wrapText=True)
                 cell.alignment =  cell.alignment.copy(vertical='center')
+
         sheet.column_dimensions['A'].width = 13
         sheet.column_dimensions['B'].width = 13
-        sheet.column_dimensions['C'].width = 13
+        sheet.column_dimensions['C'].width = 20
         sheet.column_dimensions['D'].width = 20
-        sheet.column_dimensions['E'].width = 20
-        sheet.column_dimensions['F'].width = 13
-        sheet.column_dimensions['G'].width = 50  
-        sheet.column_dimensions['H'].width = 20
+        sheet.column_dimensions['E'].width = 13
+        sheet.column_dimensions['F'].width = 50
+        sheet.column_dimensions['G'].width = 20  
+
+        thin_border = Border(left=Side(style='thin'), 
+                     right=Side(style='thin'), 
+                     top=Side(style='thin'), 
+                     bottom=Side(style='thin'))
+
+        for row in ws.iter_rows():
+            for cell in row:            
+                cell.border = thin_border
+
+        wb.guess_types = True
         wb.save('app\\%s.xlsx' % session["username"])
 
-        msg = Message(recipients=['art.isackov@gmail.com'])
+        msg = Message(recipients=[mail1])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
         msg.body = 'Электронный отчет'
         with app.open_resource('%s.xlsx' % session["username"]) as attach:

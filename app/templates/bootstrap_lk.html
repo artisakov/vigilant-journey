@@ -27,13 +27,20 @@
             <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
           </li>
         </ul>
-        <form action="/email" method="GET">
-          <button type="submit" class="btn btn-danger">Отправить врачу</button>
-        </form>
       </div>
     </nav>
   </header>
+
   <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+    <nav class="navbar navbar-light bg-light" style='background-color: white !important;'>
+      <form class="form-inline" action="/email" method="POST">
+        <input class="form-control" type="search" placeholder="@Email" aria-label="Search" name="email_sendto"
+          required style='margin-bottom: 10px; margin-right: 10px;'>
+        <input class="form-control" type="search" placeholder="@Email" aria-label="Search" name="email_sendto"
+          required style='margin-bottom: 10px; margin-right: 10px;'>
+        <button class="btn btn-danger" type="submit" style='margin-bottom: 10px;'>Отправить</button>
+      </form>
+    </nav>
     <div class="card m-3 h-100" style="width: 26rem;">
       <img src="static/images/img1.jpg" class="card-img-top">
       <div class="card-body">
@@ -57,7 +64,7 @@
                   {%for i in MondayZ%}
                   <input name="checked" style="display: none;" class="checkbox" type="checkbox" id="{{ i[0] }}"
                     value="{{ i[0] }}/{{ i[3] }}/{{ i[2] }}/{{i[4]}}">
-                  <label name="checked" for="{{ i[0] }}">{{ i[0] }} {{i[2]}}</label><br>
+                  {{ i[0] }} {{i[2]}}<br>
                   {%endfor%}
                 </div>
               </div>
