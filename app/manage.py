@@ -19,6 +19,7 @@ import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Alignment
 from openpyxl.styles.borders import Border, Side
+from openpyxl.styles import Font, Color, colors, PatternFill
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -103,8 +104,8 @@ def searchlink(search_string):
     db = os.path.join(path, 'diacompanion.db')
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute("""SELECT DISTINCT (name) name ,_id FROM
-                receipts WHERE category LIKE ?
+    cur.execute("""SELECT DISTINCT (name) name,_id FROM
+                constant_food WHERE category LIKE ?
                 GROUP BY name""", ('%{}%'.format(search_string),))
     result = cur.fetchall()
     con.close()
@@ -125,27 +126,17 @@ def search():
 
         cur.execute(""" SELECT category FROM constant_foodGroups""")
         category_a = cur.fetchall()
-
-        cur.execute(""" SELECT category FROM receiptsGroups""")
-        category_b = cur.fetchall()
-
         if (request.form['input_query'],) in category_a:
-            cur.execute("""SELECT name, _id FROM
-                        constant_food WHERE category LIKE ?
-                        GROUP BY name""", ('%{}%'.format(search_string),))
-            result = cur.fetchall()
-        elif (request.form['input_query'],) in category_b:
-            cur.execute("""SELECT name, _id, additional FROM
-                        receipts WHERE category LIKE ?
-                        GROUP BY name""", ('%{}%'.format(search_string),))
+            cur.execute('''SELECT name,_id FROM constant_food
+                        WHERE category LIKE ?
+                        GROUP BY name''', ('%{}%'.format(search_string),))
             result = cur.fetchall()
         else:
-            cur.execute("""SELECT name, _id, additional FROM
-                        constant_food WHERE name LIKE ?
-                        GROUP BY name""", ('%{}%'.format(search_string),))
+            cur.execute('''SELECT name,_id FROM constant_food
+                        WHERE name LIKE ?
+                        GROUP BY name''', ('%{}%'.format(search_string),))
             result = cur.fetchall()
         con.close()
-
         return render_template('search_page.html', result=result,
                                name=session['username'])
 
@@ -197,7 +188,6 @@ def favour():
     if request.method == 'POST':
 
         L1 = request.form.getlist('row')
-
         brf1 = datetime.time(7, 0)
         brf2 = datetime.time(11, 30)
         obed1 = datetime.time(12, 0)
@@ -268,15 +258,182 @@ def favour():
         if index_a == "":
             index_a = "6.88"
 
-        cur.execute(""" SELECT name FROM constant_food""")
-        category_a = cur.fetchall()
-
+        # Достаем все необходимые для диеты параметры
         for i in range(len(L1)):
-            cur.execute("""INSERT INTO favourites VALUES(?,?,?,?,?,?,?,?,?)""",
-                        (session['user_id'], week_day, date, time, typ, L1[i], libra, index_b, index_a))
+            cur.execute('''SELECT prot FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            prot = cur.fetchall()
+            cur.execute('''SELECT carbo FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            carbo = cur.fetchall()
+            cur.execute('''SELECT fat FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            fat = cur.fetchall()
+            cur.execute('''SELECT ec FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            ec = cur.fetchall()
+            cur.execute('''SELECT water FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            water = cur.fetchall()
+            cur.execute('''SELECT mds FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            mds = cur.fetchall()
+            cur.execute('''SELECT kr FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            kr = cur.fetchall()
+            cur.execute('''SELECT pv FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            pv = cur.fetchall()
+            cur.execute('''SELECT ok FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            ok = cur.fetchall()
+            cur.execute('''SELECT zola FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            zola = cur.fetchall()
+            cur.execute('''SELECT na FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            na = cur.fetchall()
+            cur.execute('''SELECT k FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            k = cur.fetchall()
+            cur.execute('''SELECT ca FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            ca = cur.fetchall()
+            cur.execute('''SELECT mg FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            mg = cur.fetchall()
+            cur.execute('''SELECT p FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            p = cur.fetchall()
+            cur.execute('''SELECT fe FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            fe = cur.fetchall()
+            cur.execute('''SELECT a FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            a = cur.fetchall()
+            cur.execute('''SELECT kar FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            kar = cur.fetchall()
+            cur.execute('''SELECT re FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            re = cur.fetchall()
+            cur.execute('''SELECT b1 FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            b1 = cur.fetchall()
+            cur.execute('''SELECT b2 FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            b2 = cur.fetchall()
+            cur.execute('''SELECT rr FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            rr = cur.fetchall()
+            cur.execute('''SELECT c FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            c = cur.fetchall()
+            cur.execute('''SELECT hol FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            hol = cur.fetchall()
+            for pr in prot:
+                print(pr[0])
+            for car in carbo:
+                print(car[0])
+            for fa in fat:
+                print(fa[0])
+            for energy in ec:
+                print(energy[0])
+            for wat in water:
+                print(wat[0])
+            for md in mds:
+                print(md[0])
+            for kr1 in kr:
+                print(kr1[0])
+            for pv1 in pv:
+                print(pv1[0])
+            for ok1 in ok:
+                print(ok1[0])
+            for zola1 in zola:
+                print(zola1[0])
+            for na1 in na:
+                print(na1[0])
+            for k1 in k:
+                print(k1[0])
+            for ca1 in ca:
+                print(ca1[0])
+            for mg1 in mg:
+                print(mg1[0])
+            for p1 in p:
+                print(p1[0])
+            for fe1 in fe:
+                print(fe1[0])
+            for a1 in a:
+                print(a1[0])
+            for kar1 in kar:
+                print(kar1[0])
+            for re1 in re:
+                print(re1[0])
+            for b11 in b1:
+                print(b11[0])
+            for b21 in b2:
+                print(b21[0])
+            for rr1 in rr:
+                print(rr1[0])
+            for c1 in c:
+                print(c1[0])
+            for hol1 in hol:
+                print(hol1[0])
+            pustoe = ''
+            cur.execute("""INSERT INTO favourites
+                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
+                        ?,?,?,?,?,?,?,?,?,?)""", (session['user_id'], week_day,
+                        date, time, typ, L1[i], libra, index_b, index_a,
+                        str(pr[0]), str(car[0]), str(fa[0]), str(energy[0]),
+                        pustoe, str(wat[0]), str(md[0]), str(kr1[0]),
+                        str(pv1[0]), str(ok1[0]), str(zola1[0]), str(na1[0]),
+                        str(k1[0]), str(ca1[0]), str(mg1[0]), str(p1[0]),
+                        str(fe1[0]), str(a1[0]), str(kar1[0]), str(re1[0]),
+                        str(b11[0]), str(b21[0]), str(rr1[0]),
+                        str(c1[0]), str(hol1[0])))
             con.commit()
         con.close()
+
     return redirect(url_for('news'))
+
+
+@app.route('/activity')
+@login_required
+def activity():
+    # Старинца физической активности
+    return render_template('activity.html')
+
+
+@app.route('/add_activity', methods=['POST'])
+@login_required
+def add_activity():
+    # Добавляем нагрузку в базу данных
+    if request.method == 'POST':
+        min1 = request.form['min']
+        type1 = request.form['type1']
+        if type1 == '1':
+            type1 = 'Ходьба'
+        elif type1 == '2':
+            type1 = 'Зарядка'
+        elif type1 == '3':
+            type1 = 'Спорт'
+        elif type1 == '4':
+            type1 = 'Уборка в квартире'
+        elif type1 == '5':
+            type1 = 'Работа в огороде'
+        else:
+            type1 = 'Сон'
+        time1 = request.form['timer']
+        path = os.path.dirname(os.path.abspath(__file__))
+        db = os.path.join(path, 'diacompanion.db')
+        con = sqlite3.connect(db)
+        cur = con.cursor()
+        cur.execute("""INSERT INTO activity VALUES(?,?,?,?)""",
+                    (session['user_id'], min1, type1, time1))
+        con.commit()
+        con.close()
+    return redirect(url_for('activity'))
 
 
 @app.route('/lk')
@@ -330,13 +487,15 @@ def lk():
                 WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
-                AND date = ?""", (session['user_id'], 'Понедельник', 'Обед', M))
+                AND date = ?""",
+                (session['user_id'], 'Понедельник', 'Обед', M))
     MondayO = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ?
                 AND week_day = ?
                 AND type = ?
-                AND date = ?""", (session['user_id'], 'Понедельник', 'Ужин', M))
+                AND date = ?""",
+                (session['user_id'], 'Понедельник', 'Ужин', M))
     MondayY = cur.fetchall()
     cur.execute(""" SELECT food,week_day,time,date,type FROM favourites
                 WHERE user_id = ?
@@ -581,13 +740,14 @@ def arch():
     con = sqlite3.connect(db)
     cur = con.cursor()
     cur.execute(
-        """SELECT week_day,date,time,food,libra,type,index_b,index_a FROM favourites""")
+        """SELECT week_day,date,time,food,libra,type,index_b,
+           index_a,prot,carbo,fat,energy FROM favourites""")
     L = cur.fetchall()
     con.close()
     return render_template('arch.html', L=L)
 
 
-@app.route('/email', methods=['GET','POST'])
+@app.route('/email', methods=['GET', 'POST'])
 @login_required
 def email():
     # Отправляем отчет по почте отчет
@@ -598,33 +758,75 @@ def email():
         db = os.path.join(path, 'diacompanion.db')
         con = sqlite3.connect(db)
         cur = con.cursor()
-        cur.execute('''SELECT week_day,date,time,type,food,libra,index_b,index_a FROM favourites
+        cur.execute('''SELECT week_day,date,time,type,
+                    food,libra,index_b,index_a,prot,carbo,
+                    fat,energy,micr,water,mds,kr,pv,ok,
+                    zola,na,k,ca,mg,p,fe,a,kar,re,b1,b2,
+                    rr,c,hol FROM favourites
                     WHERE user_id = ?''', (session['user_id'],))
         L = cur.fetchall()
         con.close()
-
-        food_weight = pd.DataFrame(L, columns=['День','Дата', 'Время', 'Тип',
-                                               'Продукт', 'Масса (в граммах)', 'Уровень сахара до', 'Уровень сахара после'])
+        food_weight = pd.DataFrame(L, columns=['День', 'Дата', 'Время', 'Тип',
+                                               'Продукт', 'Масса (в граммах)',
+                                               'Уровень сахара до',
+                                               'Уровень сахара после',
+                                               'Белки', 'Углеводы', 'Жиры',
+                                               'Энергетическая ценность',
+                                               'Микроэлементы', 'Вода', 'МДС',
+                                               'Крахмал', 'Пиш. волокна',
+                                               'Орган. кислота', 'Зола',
+                                               'Натрий', 'Калий', 'Кальций',
+                                               'Магний', 'Фосфор', 'Железо',
+                                               'Ретинол', 'Каротин',
+                                               'Ретин', 'Тиамин', 'Рибофлавин',
+                                               'Ниацин', 'Аскорбиновая кисл.',
+                                               'Холестерин'])
         food_weight = food_weight.drop('День', axis=1)
         food_weight['Уровень сахара до'] = pd.to_numeric(food_weight['Уровень сахара до'])
         food_weight['Уровень сахара после'] = pd.to_numeric(food_weight['Уровень сахара после'])
 
         a = food_weight.groupby(['Дата', 'Тип', 'Уровень сахара до', 'Уровень сахара после', 'Время']).agg({"Продукт": lambda tags: '\n'.join(tags),
-                                                                                                                           "Масса (в граммах)": lambda tags: '\n'.join(tags)})
-        a['Масса (в граммах)'] = pd.to_numeric(a['Масса (в граммах)'],errors='ignore')
+                                                                                                                           "Масса (в граммах)": lambda tags: '\n'.join(tags),
+                                                                                                                           "Белки": lambda tags: '\n'.join(tags),
+                                                                                                                           "Углеводы": lambda tags: '\n'.join(tags),
+                                                                                                                           "Жиры": lambda tags: '\n'.join(tags),
+                                                                                                                           "Энергетическая ценность": lambda tags: '\n'.join(tags),
+                                                                                                                           "Микроэлементы": lambda tags: '\n'.join(tags),
+                                                                                                                           "Вода": lambda tags: '\n'.join(tags),
+                                                                                                                           "МДС": lambda tags: '\n'.join(tags),
+                                                                                                                           "Крахмал": lambda tags: '\n'.join(tags),
+                                                                                                                           "Пиш. волокна": lambda tags: '\n'.join(tags),
+                                                                                                                           "Орган. кислота": lambda tags: '\n'.join(tags),
+                                                                                                                           "Зола": lambda tags: '\n'.join(tags),
+                                                                                                                           "Натрий": lambda tags: '\n'.join(tags),
+                                                                                                                           "Калий": lambda tags: '\n'.join(tags),
+                                                                                                                           "Кальций": lambda tags: '\n'.join(tags),
+                                                                                                                           "Магний": lambda tags: '\n'.join(tags),
+                                                                                                                           "Фосфор": lambda tags: '\n'.join(tags),
+                                                                                                                           "Железо": lambda tags: '\n'.join(tags),
+                                                                                                                           "Ретинол": lambda tags: '\n'.join(tags),
+                                                                                                                           "Каротин": lambda tags: '\n'.join(tags),
+                                                                                                                           "Ретин": lambda tags: '\n'.join(tags),
+                                                                                                                           "Тиамин": lambda tags: '\n'.join(tags),
+                                                                                                                           "Рибофлавин": lambda tags: '\n'.join(tags),
+                                                                                                                           "Ниацин": lambda tags: '\n'.join(tags),
+                                                                                                                           "Аскорбиновая кисл.": lambda tags: '\n'.join(tags),
+                                                                                                                           "Холестерин": lambda tags: '\n'.join(tags)})
+        length = str(len(a['Микроэлементы'])+3)
+        print(length)
 
         writer = pd.ExcelWriter('app\\%s.xlsx' %
-                                session["username"], engine='xlsxwriter')                            
+                                session["username"], engine='xlsxwriter')
         a.to_excel(writer, sheet_name='Приемы пищи')
         writer.save()
 
-        wb=openpyxl.load_workbook('app\\%s.xlsx' %session['username'])
+        wb = openpyxl.load_workbook('app\\%s.xlsx' % session['username'])
         sheet = wb['Приемы пищи']
-        ws=wb.active
+        ws = wb.active
         for row in ws.iter_rows():
-            for cell in row:      
-                cell.alignment =  cell.alignment.copy(wrapText=True)
-                cell.alignment =  cell.alignment.copy(vertical='center')
+            for cell in row:
+                cell.alignment = cell.alignment.copy(wrapText=True)
+                cell.alignment = cell.alignment.copy(vertical='center')
 
         sheet.column_dimensions['A'].width = 13
         sheet.column_dimensions['B'].width = 13
@@ -632,18 +834,108 @@ def email():
         sheet.column_dimensions['D'].width = 20
         sheet.column_dimensions['E'].width = 13
         sheet.column_dimensions['F'].width = 50
-        sheet.column_dimensions['G'].width = 20  
+        sheet.column_dimensions['G'].width = 20
+        sheet.column_dimensions['H'].width = 20
+        sheet.column_dimensions['I'].width = 20
+        sheet.column_dimensions['J'].width = 20
+        sheet.column_dimensions['K'].width = 20
+        sheet.column_dimensions['L'].width = 20
+        sheet.column_dimensions['M'].width = 20
+        sheet.column_dimensions['P'].width = 20
+        sheet.column_dimensions['Q'].width = 20
+        sheet.column_dimensions['AC'].width = 20
+        sheet.column_dimensions['AE'].width = 20
+        sheet.column_dimensions['AF'].width = 20
 
-        thin_border = Border(left=Side(style='thin'), 
-                     right=Side(style='thin'), 
-                     top=Side(style='thin'), 
-                     bottom=Side(style='thin'))
+        a1 = ws['A1']
+        a1.fill = PatternFill("solid", fgColor="FFCC99")
+        b1 = ws['B1']
+        b1.fill = PatternFill("solid", fgColor="FFCC99")
+        c1 = ws['C1']
+        c1.fill = PatternFill("solid", fgColor="FFCC99")
+        d1 = ws['D1']
+        d1.fill = PatternFill("solid", fgColor="FFCC99")
+        e1 = ws['E1']
+        e1.fill = PatternFill("solid", fgColor="FFCC99")
+        f1 = ws['F1']
+        f1.fill = PatternFill("solid", fgColor="FFCC99")
+        g1 = ws['G1']
+        g1.fill = PatternFill("solid", fgColor="FFCC99")
+        h1 = ws['H1']
+        h1.fill = PatternFill("solid", fgColor="FFCC99")
+        i1 = ws['I1']
+        i1.fill = PatternFill("solid", fgColor="FFCC99")
+        j1 = ws['J1']
+        j1.fill = PatternFill("solid", fgColor="FFCC99")
+        k1 = ws['K1']
+        k1.fill = PatternFill("solid", fgColor="FFCC99")
+        l1 = ws['L1']
+        l1.fill = PatternFill("solid", fgColor="FFCC99")
+        m1 = ws['M1']
+        m1.fill = PatternFill("solid", fgColor="FFCC99")
+        n1 = ws['N1']
+        n1.fill = PatternFill("solid", fgColor="FFCC99")
+        o1 = ws['O1']
+        o1.fill = PatternFill("solid", fgColor="FFCC99")
+        p1 = ws['P1']
+        p1.fill = PatternFill("solid", fgColor="FFCC99")
+        q1 = ws['Q1']
+        q1.fill = PatternFill("solid", fgColor="FFCC99")
+        r1 = ws['R1']
+        r1.fill = PatternFill("solid", fgColor="FFCC99")
+        s1 = ws['S1']
+        s1.fill = PatternFill("solid", fgColor="FFCC99")
+        t1 = ws['T1']
+        t1.fill = PatternFill("solid", fgColor="FFCC99")
+        u1 = ws['U1']
+        u1.fill = PatternFill("solid", fgColor="FFCC99")
+        v1 = ws['V1']
+        v1.fill = PatternFill("solid", fgColor="FFCC99")
+        w1 = ws['W1']
+        w1.fill = PatternFill("solid", fgColor="FFCC99")
+        x1 = ws['X1']
+        x1.fill = PatternFill("solid", fgColor="FFCC99")
+        y1 = ws['Y1']
+        y1.fill = PatternFill("solid", fgColor="FFCC99")
+        z1 = ws['Z1']
+        z1.fill = PatternFill("solid", fgColor="FFCC99")
+        aa1 = ws['AA1']
+        aa1.fill = PatternFill("solid", fgColor="FFCC99")
+        ab1 = ws['AB1']
+        ab1.fill = PatternFill("solid", fgColor="FFCC99")
+        ac1 = ws['AC1']
+        ac1.fill = PatternFill("solid", fgColor="FFCC99")
+        ad1 = ws['AD1']
+        ad1.fill = PatternFill("solid", fgColor="FFCC99")
+        ae1 = ws['AE1']
+        ae1.fill = PatternFill("solid", fgColor="FFCC99")
+        af1 = ws['AF1']
+        af1.fill = PatternFill("solid", fgColor="FFCC99")
+
+        thin_border = Border(left=Side(style='thin'),
+                             right=Side(style='thin'),
+                             top=Side(style='thin'),
+                             bottom=Side(style='thin'))
 
         for row in ws.iter_rows():
-            for cell in row:            
+            for cell in row:
                 cell.border = thin_border
 
-        wb.guess_types = True
+        merged_cells_range = ws.merged_cells.ranges
+        print(merged_cells_range)
+        for merged_cell in merged_cells_range:
+            merged_cell.shift(0, 2)
+        ws.insert_rows(1, 2)
+
+        if (len(a['Микроэлементы'])+3) > 3:
+            sheet.merge_cells('L4:L%s' % length)
+        l4 = ws['L4']
+        l4.fill = PatternFill("solid", fgColor="FFCC99")
+        ws['A2'] = 'Приемы пищи'
+        ws['A1'] = 'Исаков Артём Олегович'
+        sheet.merge_cells('A1:AF1')
+        sheet.merge_cells('A2:AF2')
+
         wb.save('app\\%s.xlsx' % session["username"])
 
         msg = Message(recipients=[mail1])
@@ -652,7 +944,7 @@ def email():
         with app.open_resource('%s.xlsx' % session["username"]) as attach:
             msg.attach('%s.xlsx' % session["username"], 'Sheet/xlsx',
                        attach.read())
-        mail.send(msg)
+        # mail.send(msg)
 
     return redirect(url_for('lk'))
 

@@ -36,11 +36,15 @@
             <tr>
                 <th scope="col">Дата</th>
                 <th scope="col">Время</th>
+                <th scope="col">Приём пищи</th>
                 <th scope="col">Еда</th>
                 <th scope="col">Вес (в граммах)</th>
-                <th scope="col">Приём пищи</th>
                 <th scope="col">Уровень сахара до</th>
                 <th scope="col">Уровень сахара после</th>
+                <th scope="col">Белки</th>
+                <th scope="col">Углеводы</th>
+                <th scope="col">Жиры</th>
+                <th scope="col">Энергетическая ценность</th>
             </tr>
         </thead>
         <tbody>
@@ -48,11 +52,15 @@
             <tr>
                 <td>{{row[1]}}</td>
                 <td>{{row[2]}}</td>
+                <td>{{row[5]}}</td>
                 <td>{{row[3]}}</td>
                 <td>{{row[4]}}</td>
-                <td>{{row[5]}}</td>
                 <td>{{row[6]}}</td>
                 <td>{{row[7]}}</td>
+                <td>{{row[8]}}</td>
+                <td>{{row[9]}}</td>
+                <td>{{row[10]}}</td>
+                <td>{{row[11]}}</td>
             </tr>
             {% endfor %}
         </tbody>

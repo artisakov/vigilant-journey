@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
+</head>
+
+</html>
+
+<body style="margin: 0; padding: 0;">
+    <header style="height: 60px;">
+        <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
+            <a class="navbar-brand" href="{{ url_for('arch') }}">Архив</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav mr-3">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{{ url_for('news') }}">Главная<span
+                                class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('lk') }}">Приемы пищи</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('lk') }}">Физическая активность</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </header>
+    <form method="POST" action="/add_activity">
+        <div class="input-group m-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="inputGroupSelect01">Занятие</label>
+            </div>
+            <select class="custom-select-sm-6" id="inputGroupSelect01" name = 'type1'>
+                <option selected>Тип активности</option>
+                <option value="1">Ходьба</option>
+                <option value="2">Зарядка</option>
+                <option value="3">Спорт</option>
+                <option value="4">Уборка в квартире</option>
+                <option value="5">Работа в огороде</option>
+                <option value="6">Сон</option>
+            </select>
+        </div>
+        <div class="input-group m-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="timer">Время</label>
+            </div>
+            <input type="time" name="timer" value="" id="timer">
+        </div>
+        <div class="input-group m-3">
+            <div class="input-group-prepend">
+                <label class="input-group-text" for="min">Кол-во мин.</label>
+            </div>
+            <input type="number" name="min" value="" id="min" style="width: 5rem;">
+        </div>
+        <button type="submit" class="btn btn-outline-primary ml-3">Сохранить</button>
+    </form>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
