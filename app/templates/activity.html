@@ -36,35 +36,57 @@
             </div>
         </nav>
     </header>
-    <form method="POST" action="/add_activity">
-        <div class="input-group m-3">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="inputGroupSelect01">Занятие</label>
+    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <form method="POST" action="/add_activity">
+            <div class="input-group m-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Занятие</label>
+                </div>
+                <select class="custom-select-sm-6" id="inputGroupSelect01" name='type1'>
+                    <option selected>Тип активности</option>
+                    <option value="1">Ходьба</option>
+                    <option value="2">Зарядка</option>
+                    <option value="3">Спорт</option>
+                    <option value="4">Уборка в квартире</option>
+                    <option value="5">Работа в огороде</option>
+                    <option value="6">Сон</option>
+                </select>
             </div>
-            <select class="custom-select-sm-6" id="inputGroupSelect01" name = 'type1'>
-                <option selected>Тип активности</option>
-                <option value="1">Ходьба</option>
-                <option value="2">Зарядка</option>
-                <option value="3">Спорт</option>
-                <option value="4">Уборка в квартире</option>
-                <option value="5">Работа в огороде</option>
-                <option value="6">Сон</option>
-            </select>
-        </div>
-        <div class="input-group m-3">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="timer">Время</label>
+            <div class="input-group m-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="timer">Время</label>
+                </div>
+                <input type="time" name="timer" value="" id="timer">
             </div>
-            <input type="time" name="timer" value="" id="timer">
-        </div>
-        <div class="input-group m-3">
-            <div class="input-group-prepend">
-                <label class="input-group-text" for="min">Кол-во мин.</label>
+            <div class="input-group m-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="min" id='measure1'>Кол-во мин.</label>
+                </div>
+                <input type="number" name="min" value="" id="min" style="width: 5rem;">
             </div>
-            <input type="number" name="min" value="" id="min" style="width: 5rem;">
-        </div>
-        <button type="submit" class="btn btn-outline-primary ml-3">Сохранить</button>
-    </form>
+            <button type="submit" class="btn btn-outline-primary ml-3">Сохранить</button>
+        </form>
+        <table class='table mt-3' style="width: 26rem;">
+            <thead class="thead-light">
+                <tr>
+                    <th scope='col'>Дата</th>
+                    <th scope='col'>Время</th>
+                    <th scope='col'>Длительность</th>
+                    <th scope='col'>Тип нагрузки</th>                                                            
+                </tr>
+            </thead>
+            <tbody>
+                {% for row in Act %}
+                <tr>
+                    <td>{{row[0]}}</td>
+                    <td>{{row[1]}}</td>
+                    <td>{{row[2]}}</td>
+                    <td>{{row[3]}}</td>                                                            
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
@@ -72,4 +94,9 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <script type="text/javascript">
+        $('#measure1').on('click', function () {
+            if ($('#measure1').text() === 'Кол-во мин.') { $('#measure1').text('Кол-во час.'); } else { $('#measure1').text('Кол-во мин.'); }
+        })
+    </script>
 </body>

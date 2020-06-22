@@ -31,7 +31,7 @@ app.config['MAIL_PORT'] = 465
 app.config['MAIL_USE_TLS'] = False
 app.config['MAIL_USE_SSL'] = True
 app.config['MAIL_USERNAME'] = 'dnewnike@yandex.ru'
-app.config['MAIL_PASSWORD'] = ''
+app.config['MAIL_PASSWORD'] = 'AjPR6kAs897jasb'
 app.config['MAIL_DEFAULT_SENDER'] = ('Еженедельник', 'dnewnike@yandex.ru')
 app.config['MAIL_MAX_EMAILS'] = None
 
@@ -401,8 +401,16 @@ def favour():
 @app.route('/activity')
 @login_required
 def activity():
-    # Старинца физической активности
-    return render_template('activity.html')
+    # Страница физической активности
+    path = os.path.dirname(os.path.abspath(__file__))
+    db = os.path.join(path, 'diacompanion.db')
+    con = sqlite3.connect(db)
+    cur = con.cursor()
+    cur.execute("""SELECT date,time,min,type
+                    FROM activity WHERE user_id = ?""", (session['user_id'],))
+    Act = cur.fetchall()
+    con.close()
+    return render_template('activity.html', Act=Act)
 
 
 @app.route('/add_activity', methods=['POST'])
@@ -410,6 +418,8 @@ def activity():
 def add_activity():
     # Добавляем нагрузку в базу данных
     if request.method == 'POST':
+        td = datetime.datetime.today().date()
+        date = td.strftime("%d.%m.%Y")
         min1 = request.form['min']
         type1 = request.form['type1']
         if type1 == '1':
@@ -429,8 +439,8 @@ def add_activity():
         db = os.path.join(path, 'diacompanion.db')
         con = sqlite3.connect(db)
         cur = con.cursor()
-        cur.execute("""INSERT INTO activity VALUES(?,?,?,?)""",
-                    (session['user_id'], min1, type1, time1))
+        cur.execute("""INSERT INTO activity VALUES(?,?,?,?,?)""",
+                    (session['user_id'], min1, type1, time1, date))
         con.commit()
         con.close()
     return redirect(url_for('activity'))
@@ -741,7 +751,8 @@ def arch():
     cur = con.cursor()
     cur.execute(
         """SELECT week_day,date,time,food,libra,type,index_b,
-           index_a,prot,carbo,fat,energy FROM favourites""")
+           index_a,prot,carbo,fat,energy
+           FROM favourites WHERE user_id = ?""", (session['user_id'],))
     L = cur.fetchall()
     con.close()
     return render_template('arch.html', L=L)
