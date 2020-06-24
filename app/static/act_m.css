@@ -1,0 +1,33 @@
+.desk_activity{
+    display: flex;
+    justify-content: left;
+    align-items: flex-start;
+    flex-direction: row;
+}
+#table1{
+    width: 32rem;
+}
+
+@media only screen and (max-device-width: 420px) {
+    .desk_activity{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    #table1{
+        width: 26rem;
+    }
+}
+
+@media only screen and (max-device-width: 360px) {
+    .desk_activity{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+    #table1{
+        width: 25rem;
+    }
+}

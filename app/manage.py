@@ -406,7 +406,7 @@ def activity():
     db = os.path.join(path, 'diacompanion.db')
     con = sqlite3.connect(db)
     cur = con.cursor()
-    cur.execute("""SELECT date,time,min,type
+    cur.execute("""SELECT date,time,min,type,user_id
                     FROM activity WHERE user_id = ?""", (session['user_id'],))
     Act = cur.fetchall()
     con.close()
@@ -429,9 +429,9 @@ def add_activity():
         elif type1 == '3':
             type1 = 'Спорт'
         elif type1 == '4':
-            type1 = 'Уборка в квартире'
+            type1 = 'Уборка'
         elif type1 == '5':
-            type1 = 'Работа в огороде'
+            type1 = 'Работа в саду'
         else:
             type1 = 'Сон'
         time1 = request.form['timer']
@@ -735,10 +735,36 @@ def delete():
             cur.execute('''DELETE FROM favourites WHERE food = ?
                         AND date = ?
                         AND time = ?
-                        AND type = ? ''', (L1[0], L1[1], L1[2], L1[3]))
+                        AND type = ?
+                        AND user_id = ?''', (L1[0], L1[1], L1[2], L1[3],
+                                             session['user_id']))
         con.commit()
         con.close()
     return redirect(url_for('lk'))
+
+
+@app.route('/remove', methods=['POST'])
+@login_required
+def remove():
+    # Удаление данных из физической активности за неделю
+    if request.method == 'POST':
+        path = os.path.dirname(os.path.abspath(__file__))
+        db = os.path.join(path, 'diacompanion.db')
+        con = sqlite3.connect(db)
+        cur = con.cursor()
+        L = request.form.getlist('selected')
+        for i in range(len(L)):
+            L1 = L[i].split('/')
+            print('НАША Л1', L1)
+            cur.execute('''DELETE FROM activity WHERE date = ?
+                        AND time = ?
+                        AND min = ?
+                        AND type = ?
+                        AND user_id = ?''', (L1[0], L1[1], L1[2], L1[3],
+                                             session['user_id']))
+        con.commit()
+        con.close()
+    return redirect(url_for('activity'))
 
 
 @app.route('/arch')
