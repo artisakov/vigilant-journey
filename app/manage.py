@@ -829,33 +829,38 @@ def email():
                                                'Холестерин'])
         food_weight = food_weight.drop('День', axis=1)
 
-        a = food_weight.groupby(['Дата', 'Тип', 'Уровень сахара до', 'Уровень сахара после', 'Время']).agg({"Продукт": lambda tags: '\n'.join(tags),
-                                                                                                                           "Масса (в граммах)": lambda tags: '\n'.join(tags),
-                                                                                                                           "Белки": lambda tags: '\n'.join(tags),
-                                                                                                                           "Углеводы": lambda tags: '\n'.join(tags),
-                                                                                                                           "Жиры": lambda tags: '\n'.join(tags),
-                                                                                                                           "Энергетическая ценность": lambda tags: '\n'.join(tags),
-                                                                                                                           "Микроэлементы": lambda tags: '\n'.join(tags),
-                                                                                                                           "Вода": lambda tags: '\n'.join(tags),
-                                                                                                                           "МДС": lambda tags: '\n'.join(tags),
-                                                                                                                           "Крахмал": lambda tags: '\n'.join(tags),
-                                                                                                                           "Пиш. волокна": lambda tags: '\n'.join(tags),
-                                                                                                                           "Орган. кислота": lambda tags: '\n'.join(tags),
-                                                                                                                           "Зола": lambda tags: '\n'.join(tags),
-                                                                                                                           "Натрий": lambda tags: '\n'.join(tags),
-                                                                                                                           "Калий": lambda tags: '\n'.join(tags),
-                                                                                                                           "Кальций": lambda tags: '\n'.join(tags),
-                                                                                                                           "Магний": lambda tags: '\n'.join(tags),
-                                                                                                                           "Фосфор": lambda tags: '\n'.join(tags),
-                                                                                                                           "Железо": lambda tags: '\n'.join(tags),
-                                                                                                                           "Ретинол": lambda tags: '\n'.join(tags),
-                                                                                                                           "Каротин": lambda tags: '\n'.join(tags),
-                                                                                                                           "Ретин": lambda tags: '\n'.join(tags),
-                                                                                                                           "Тиамин": lambda tags: '\n'.join(tags),
-                                                                                                                           "Рибофлавин": lambda tags: '\n'.join(tags),
-                                                                                                                           "Ниацин": lambda tags: '\n'.join(tags),
-                                                                                                                           "Аскорбиновая кисл.": lambda tags: '\n'.join(tags),
-                                                                                                                           "Холестерин": lambda tags: '\n'.join(tags)})
+        a = food_weight.groupby(['Дата',
+                                 'Тип',
+                                 'Уровень сахара до',
+                                 'Уровень сахара после',
+                                 'Время']).agg({
+                                  "Продукт": lambda tags: '\n'.join(tags),
+                                  "Масса (в граммах)": lambda tags: '\n'.join(tags),
+                                  "Белки": lambda tags: '\n'.join(tags),
+                                  "Углеводы": lambda tags: '\n'.join(tags),
+                                  "Жиры": lambda tags: '\n'.join(tags),
+                                  "Энергетическая ценность": lambda tags: '\n'.join(tags),
+                                  "Микроэлементы": lambda tags: '\n'.join(tags),
+                                  "Вода": lambda tags: '\n'.join(tags),
+                                  "МДС": lambda tags: '\n'.join(tags),
+                                  "Крахмал": lambda tags: '\n'.join(tags),
+                                  "Пиш. волокна": lambda tags: '\n'.join(tags),
+                                  "Орган. кислота": lambda tags: '\n'.join(tags),
+                                  "Зола": lambda tags: '\n'.join(tags),
+                                  "Натрий": lambda tags: '\n'.join(tags),
+                                  "Калий": lambda tags: '\n'.join(tags),
+                                  "Кальций": lambda tags: '\n'.join(tags),
+                                  "Магний": lambda tags: '\n'.join(tags),
+                                  "Фосфор": lambda tags: '\n'.join(tags),
+                                  "Железо": lambda tags: '\n'.join(tags),
+                                  "Ретинол": lambda tags: '\n'.join(tags),
+                                  "Каротин": lambda tags: '\n'.join(tags),
+                                  "Ретин": lambda tags: '\n'.join(tags),
+                                  "Тиамин": lambda tags: '\n'.join(tags),
+                                  "Рибофлавин": lambda tags: '\n'.join(tags),
+                                  "Ниацин": lambda tags: '\n'.join(tags),
+                                  "Аскорбиновая кисл.": lambda tags: '\n'.join(tags),
+                                  "Холестерин": lambda tags: '\n'.join(tags)})
         # Физическая активность
         activity1 = pd.DataFrame(L1, columns=['Дата', 'Время', 'Минуты',
                                               'Тип'])
@@ -866,8 +871,9 @@ def email():
                                         'Тип': lambda tags: '\n'.join(tags)})
         # Сон
         sleep1 = pd.DataFrame(L2, columns=['Дата', 'Время', 'Часы'])
-        sleep2 = sleep1.groupby(['Дата']).agg({'Время': lambda tags: '\n'.join(tags),
-                                               'Часы': lambda tags: '\n'.join(tags)})
+        sleep2 = sleep1.groupby(['Дата'
+                                 ]).agg({'Время': lambda tags: '\n'.join(tags),
+                                         'Часы': lambda tags: '\n'.join(tags)})
 
         # Создаем общий Excel файл
         writer = pd.ExcelWriter('app\\%s.xlsx' %
@@ -1060,7 +1066,7 @@ def email():
         f1 = sheet1['F3']
         f1.fill = PatternFill("solid", fgColor="FFCC99")
         g1 = sheet1['G3']
-        g1.fill = PatternFill("solid", fgColor="FFCC99")        
+        g1.fill = PatternFill("solid", fgColor="FFCC99")
 
         wb.save('app\\%s.xlsx' % session["username"])
         wb.close()
