@@ -17,9 +17,8 @@ import pandas as pd
 import xlsxwriter
 import openpyxl
 from openpyxl import Workbook
-from openpyxl.styles import Alignment
+from openpyxl.styles import Alignment, Font, Color, colors, PatternFill
 from openpyxl.styles.borders import Border, Side
-from openpyxl.styles import Font, Color, colors, PatternFill
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -755,7 +754,7 @@ def remove():
         L = request.form.getlist('selected')
         for i in range(len(L)):
             L1 = L[i].split('/')
-            print('НАША Л1', L1)
+
             cur.execute('''DELETE FROM activity WHERE date = ?
                         AND time = ?
                         AND min = ?
@@ -789,8 +788,10 @@ def arch():
 def email():
     # Отправляем отчет по почте отчет
     if request.method == 'POST':
+        # Получили список имейлов на которые надо отправить
         mail1 = request.form.getlist('email_sendto')
 
+        # Получили все необходимые данные из базы данных
         path = os.path.dirname(os.path.abspath(__file__))
         db = os.path.join(path, 'diacompanion.db')
         con = sqlite3.connect(db)
@@ -802,7 +803,15 @@ def email():
                     rr,c,hol FROM favourites
                     WHERE user_id = ?''', (session['user_id'],))
         L = cur.fetchall()
+        cur.execute('''SELECT date,time,min,type FROM activity
+                       WHERE user_id = ?''', (session['user_id'],))
+        L1 = cur.fetchall()
+        cur.execute('''SELECT date,time,hour FROM sleep
+                        WHERE user_id =?''', (session['user_id'],))
+        L2 = cur.fetchall()
         con.close()
+
+        # Приемы пищи
         food_weight = pd.DataFrame(L, columns=['День', 'Дата', 'Время', 'Тип',
                                                'Продукт', 'Масса (в граммах)',
                                                'Уровень сахара до',
@@ -819,8 +828,6 @@ def email():
                                                'Ниацин', 'Аскорбиновая кисл.',
                                                'Холестерин'])
         food_weight = food_weight.drop('День', axis=1)
-        food_weight['Уровень сахара до'] = pd.to_numeric(food_weight['Уровень сахара до'])
-        food_weight['Уровень сахара после'] = pd.to_numeric(food_weight['Уровень сахара после'])
 
         a = food_weight.groupby(['Дата', 'Тип', 'Уровень сахара до', 'Уровень сахара после', 'Время']).agg({"Продукт": lambda tags: '\n'.join(tags),
                                                                                                                            "Масса (в граммах)": lambda tags: '\n'.join(tags),
@@ -849,14 +856,31 @@ def email():
                                                                                                                            "Ниацин": lambda tags: '\n'.join(tags),
                                                                                                                            "Аскорбиновая кисл.": lambda tags: '\n'.join(tags),
                                                                                                                            "Холестерин": lambda tags: '\n'.join(tags)})
-        length = str(len(a['Микроэлементы'])+3)
-        print(length)
+        # Физическая активность
+        activity1 = pd.DataFrame(L1, columns=['Дата', 'Время', 'Минуты',
+                                              'Тип'])
 
+        activity2 = activity1.groupby(['Дата',
+                                       'Время']).agg({
+                                        'Минуты': lambda tags: '\n'.join(tags),
+                                        'Тип': lambda tags: '\n'.join(tags)})
+        # Сон
+        sleep1 = pd.DataFrame(L2, columns=['Дата', 'Время', 'Часы'])
+        sleep2 = sleep1.groupby(['Дата']).agg({'Время': lambda tags: '\n'.join(tags),
+                                               'Часы': lambda tags: '\n'.join(tags)})
+
+        # Создаем общий Excel файл
         writer = pd.ExcelWriter('app\\%s.xlsx' %
-                                session["username"], engine='xlsxwriter')
+                                session["username"], engine='xlsxwriter',
+                                options={'strings_to_numbers': True})
         a.to_excel(writer, sheet_name='Приемы пищи')
-        writer.save()
+        activity2.to_excel(writer, sheet_name='Физическая активность',
+                           startrow=0, startcol=0)
+        sleep2.to_excel(writer, sheet_name='Физическая активность',
+                        startrow=0, startcol=4)
+        writer.close()
 
+        # Редактируем оформление приемов пищи
         wb = openpyxl.load_workbook('app\\%s.xlsx' % session['username'])
         sheet = wb['Приемы пищи']
         ws = wb.active
@@ -959,11 +983,12 @@ def email():
                 cell.border = thin_border
 
         merged_cells_range = ws.merged_cells.ranges
-        print(merged_cells_range)
+
         for merged_cell in merged_cells_range:
             merged_cell.shift(0, 2)
         ws.insert_rows(1, 2)
 
+        length = str(len(a['Микроэлементы'])+3)
         if (len(a['Микроэлементы'])+3) > 3:
             sheet.merge_cells('L4:L%s' % length)
         l4 = ws['L4']
@@ -974,7 +999,72 @@ def email():
         sheet.merge_cells('A2:AF2')
 
         wb.save('app\\%s.xlsx' % session["username"])
+        wb.close()
 
+        # Форматируем физическую активность как надо
+        wb = openpyxl.load_workbook('app\\%s.xlsx' % session['username'])
+        sheet1 = wb['Физическая активность']
+
+        for row in sheet1.iter_rows():
+            for cell in row:
+                cell.alignment = cell.alignment.copy(wrapText=True)
+                cell.alignment = cell.alignment.copy(vertical='center')
+                cell.alignment = cell.alignment.copy(horizontal='center')
+
+        thin_border = Border(left=Side(style='thin'),
+                             right=Side(style='thin'),
+                             top=Side(style='thin'),
+                             bottom=Side(style='thin'))
+
+        for row in sheet1.iter_rows():
+            for cell in row:
+                cell.border = thin_border
+
+        merged_cells_range = sheet1.merged_cells.ranges
+
+        for merged_cell in merged_cells_range:
+            merged_cell.shift(0, 2)
+        sheet1.insert_rows(1, 2)
+
+        sheet1['A1'] = 'Исаков Артём Олегович'
+        sheet1['A2'] = 'Физическая активность'
+        sheet1['E2'] = 'Сон'
+        sheet1.merge_cells('A1:G1')
+        sheet1.merge_cells('A2:D2')
+        sheet1.merge_cells('E2:G2')
+
+        length1 = str(len(activity1['Время'])+3)
+        for row in sheet1['D4:D%s' % length1]:
+            for cell in row:
+                cell.alignment = cell.alignment.copy(wrapText=True)
+                cell.alignment = cell.alignment.copy(vertical='top')
+                cell.alignment = cell.alignment.copy(horizontal='left')
+
+        sheet1.column_dimensions['A'].width = 13
+        sheet1.column_dimensions['B'].width = 13
+        sheet1.column_dimensions['C'].width = 13
+        sheet1.column_dimensions['D'].width = 20
+        sheet1.column_dimensions['E'].width = 13
+        sheet1.column_dimensions['F'].width = 13
+        sheet1.column_dimensions['G'].width = 13
+        a1 = sheet1['A3']
+        a1.fill = PatternFill("solid", fgColor="FFCC99")
+        b1 = sheet1['B3']
+        b1.fill = PatternFill("solid", fgColor="FFCC99")
+        c1 = sheet1['C3']
+        c1.fill = PatternFill("solid", fgColor="FFCC99")
+        d1 = sheet1['D3']
+        d1.fill = PatternFill("solid", fgColor="FFCC99")
+        e1 = sheet1['E3']
+        e1.fill = PatternFill("solid", fgColor="FFCC99")
+        f1 = sheet1['F3']
+        f1.fill = PatternFill("solid", fgColor="FFCC99")
+        g1 = sheet1['G3']
+        g1.fill = PatternFill("solid", fgColor="FFCC99")        
+
+        wb.save('app\\%s.xlsx' % session["username"])
+        wb.close()
+        # Отправляем по почте
         msg = Message(recipients=[mail1])
         msg.subject = "Никнейм пользователя: %s" % session["username"]
         msg.body = 'Электронный отчет'

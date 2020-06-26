@@ -37,6 +37,15 @@
         </nav>
     </header>
     <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+        <nav class="navbar navbar-light bg-light" style='background-color: white !important;'>
+            <form class="form-inline" action="/export" method="POST">
+                <input class="form-control" type="search" placeholder="@Email" aria-label="Search" name="email_sendto"
+                    required style='margin-bottom: 10px; margin-right: 10px;'>
+                <input class="form-control" type="search" placeholder="@Email" aria-label="Search" name="email_sendto"
+                    style='margin-bottom: 10px; margin-right: 10px;'>
+                <button class="btn btn-danger" type="submit" style='margin-bottom: 10px;'>Отправить</button>
+            </form>
+        </nav>
         <div class='desk_activity'>
             <form id='add' method="POST" action="/add_activity">
                 <div class="input-group m-3">
