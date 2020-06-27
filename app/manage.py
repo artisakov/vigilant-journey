@@ -19,6 +19,9 @@ import openpyxl
 from openpyxl import Workbook
 from openpyxl.styles import Alignment, Font, Color, colors, PatternFill
 from openpyxl.styles.borders import Border, Side
+import numpy as np
+from numpy import array
+
 
 app = Flask(__name__)
 app.secret_key = b'_5#y2L"F4Q8z\n\xec]/'
@@ -809,7 +812,26 @@ def email():
         cur.execute('''SELECT date,time,hour FROM sleep
                         WHERE user_id =?''', (session['user_id'],))
         L2 = cur.fetchall()
+        cur.execute('''SELECT date,type,index_b,index_a FROM favourites GROUP BY date,type,index_a,index_b''')
+        L3 = cur.fetchall()
         con.close()
+
+        c = []
+        for i in range(len(L3)):
+            a1 = float(L3[i][3])
+            b = a1*1
+            c.append(b)
+        с1=pd.Series(c)
+        mean_index_a = с1.mean()
+        print('Уровень сахара после',mean_index_a)
+        d1 = []
+        for i in range(len(L3)):
+            a1 = float(L3[i][2])
+            b = a1*1
+            d1.append(b)
+        d1=pd.Series(d1)
+        mean_index_b = d1.mean()
+        print('Уровень сахара до',mean_index_b)
 
         # Приемы пищи
         food_weight = pd.DataFrame(L, columns=['День', 'Дата', 'Время', 'Тип',
@@ -829,6 +851,23 @@ def email():
                                                'Холестерин'])
         food_weight = food_weight.drop('День', axis=1)
 
+        list_of = ['Масса (в граммах)',
+                   'Белки', 'Углеводы', 'Жиры',
+                   'Энергетическая ценность',
+                   'Микроэлементы', 'Вода', 'МДС',
+                   'Крахмал', 'Пиш. волокна',
+                   'Орган. кислота', 'Зола',
+                   'Натрий', 'Калий', 'Кальций',
+                   'Магний', 'Фосфор', 'Железо',
+                   'Ретинол', 'Каротин',
+                   'Ретин', 'Тиамин', 'Рибофлавин',
+                   'Ниацин', 'Аскорбиновая кисл.',
+                   'Холестерин']
+        mean2 = list()
+        for i in list_of:
+            exp = pd.to_numeric(food_weight[i])
+            mean2.append(exp.mean())
+        print('Среднее по дням',mean2)
         a = food_weight.groupby(['Дата',
                                  'Тип',
                                  'Уровень сахара до',
@@ -861,6 +900,7 @@ def email():
                                   "Ниацин": lambda tags: '\n'.join(tags),
                                   "Аскорбиновая кисл.": lambda tags: '\n'.join(tags),
                                   "Холестерин": lambda tags: '\n'.join(tags)})
+
         # Физическая активность
         activity1 = pd.DataFrame(L1, columns=['Дата', 'Время', 'Минуты',
                                               'Тип'])
@@ -876,9 +916,9 @@ def email():
                                          'Часы': lambda tags: '\n'.join(tags)})
 
         # Создаем общий Excel файл
+        # можно добавить options={'strings_to_numbers': True} в writer
         writer = pd.ExcelWriter('app\\%s.xlsx' %
-                                session["username"], engine='xlsxwriter',
-                                options={'strings_to_numbers': True})
+                                session["username"], engine='xlsxwriter', options={'strings_to_numbers': True})
         a.to_excel(writer, sheet_name='Приемы пищи')
         activity2.to_excel(writer, sheet_name='Физическая активность',
                            startrow=0, startcol=0)
