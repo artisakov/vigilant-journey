@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "python.pythonPath": "venv\\Scripts\\python.exe",
     "python.linting.pylintEnabled": false,
     "python.linting.pycodestyleEnabled": true,
@@ -7,4 +8,7 @@
     "python.linting.mypyEnabled": false,
     "python.linting.flake8Enabled": false,
     "python.linting.pydocstyleEnabled": false
+=======
+    "python.pythonPath": "venv\\Scripts\\python.exe"
+>>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
 }
