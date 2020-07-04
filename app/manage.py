@@ -36,7 +36,7 @@ app.config['MAIL_USERNAME'] = 'dnewnike@yandex.ru'
 app.config['MAIL_PASSWORD'] = 'AjPR6kAs897jasb'
 app.config['MAIL_DEFAULT_SENDER'] = ('Еженедельник', 'dnewnike@yandex.ru')
 app.config['MAIL_MAX_EMAILS'] = None
-
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['MAIL_ASCII_ATTACHMENTS'] = False
 Bootstrap(app)
 db = SQLAlchemy(app)
@@ -334,6 +334,15 @@ def favour():
             cur.execute('''SELECT hol FROM constant_food
                         WHERE name = ?''', (L1[i],))
             hol = cur.fetchall()
+            cur.execute('''SELECT nzhk FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            nzhk = cur.fetchall()
+            cur.execute('''SELECT ne FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            ne = cur.fetchall()
+            cur.execute('''SELECT te FROM constant_food
+                        WHERE name = ?''', (L1[i],))
+            te = cur.fetchall()                                     
             for pr in prot:
                 print(pr[0])
             for car in carbo:
@@ -382,10 +391,16 @@ def favour():
                 print(c1[0])
             for hol1 in hol:
                 print(hol1[0])
+            for nzhk1 in nzhk:
+                print(nzhk1[0])
+            for ne1 in ne:
+                print(ne1[0])
+            for te1 in te:
+                print(te1[0])                                                
             pustoe = ''
             cur.execute("""INSERT INTO favourites
                         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
-                        ?,?,?,?,?,?,?,?,?,?)""", (session['user_id'], week_day,
+                        ?,?,?,?,?,?,?,?,?,?,?,?,?)""", (session['user_id'], week_day,
                         date, time, typ, L1[i], libra, index_b, index_a,
                         str(pr[0]), str(car[0]), str(fa[0]), str(energy[0]),
                         pustoe, str(wat[0]), str(md[0]), str(kr1[0]),
@@ -393,7 +408,8 @@ def favour():
                         str(k1[0]), str(ca1[0]), str(mg1[0]), str(p1[0]),
                         str(fe1[0]), str(a1[0]), str(kar1[0]), str(re1[0]),
                         str(b11[0]), str(b21[0]), str(rr1[0]),
-                        str(c1[0]), str(hol1[0])))
+                        str(c1[0]), str(hol1[0]),str(nzhk1[0]),
+                        str(ne1[0]),str(te1[0])))
             con.commit()
         con.close()
 
@@ -803,7 +819,7 @@ def email():
                     food,libra,index_b,index_a,prot,carbo,
                     fat,energy,micr,water,mds,kr,pv,ok,
                     zola,na,k,ca,mg,p,fe,a,kar,re,b1,b2,
-                    rr,c,hol FROM favourites
+                    rr,c,hol,nzhk,ne,te FROM favourites
                     WHERE user_id = ?''', (session['user_id'],))
         L = cur.fetchall()
         cur.execute('''SELECT date,time,min,type FROM activity
@@ -816,6 +832,7 @@ def email():
         L3 = cur.fetchall()
         con.close()
 
+        # Считаем средний уровень сахара
         c = []
         for i in range(len(L3)):
             a1 = float(L3[i][3])
@@ -846,11 +863,15 @@ def email():
                                                'Натрий', 'Калий', 'Кальций',
                                                'Магний', 'Фосфор', 'Железо',
                                                'Ретинол', 'Каротин',
-                                               'Ретин', 'Тиамин', 'Рибофлавин',
+                                               'Ретиноловый экв.', 'Тиамин', 'Рибофлавин',
                                                'Ниацин', 'Аскорбиновая кисл.',
-                                               'Холестерин'])
+                                               'Холестерин',
+                                               'НЖК',
+                                               'Ниационвый эквивалент',
+                                               'Токоферол эквивалент'])
         food_weight = food_weight.drop('День', axis=1)
-
+        
+        # Считаем средний уровень микроэлементов
         list_of = ['Масса (в граммах)',
                    'Белки', 'Углеводы', 'Жиры',
                    'Энергетическая ценность',
@@ -860,14 +881,18 @@ def email():
                    'Натрий', 'Калий', 'Кальций',
                    'Магний', 'Фосфор', 'Железо',
                    'Ретинол', 'Каротин',
-                   'Ретин', 'Тиамин', 'Рибофлавин',
+                   'Ретиноловый экв.', 'Тиамин', 'Рибофлавин',
                    'Ниацин', 'Аскорбиновая кисл.',
-                   'Холестерин']
+                   'Холестерин','НЖК',
+                   'Ниационвый эквивалент',
+                   'Токоферол эквивалент']
+
         mean2 = list()
         for i in list_of:
             exp = pd.to_numeric(food_weight[i])
             mean2.append(exp.mean())
-        print('Среднее по дням',mean2)
+        print('Среднее по дням', mean2)
+        
         a = food_weight.groupby(['Дата',
                                  'Тип',
                                  'Уровень сахара до',
@@ -894,17 +919,20 @@ def email():
                                   "Железо": lambda tags: '\n'.join(tags),
                                   "Ретинол": lambda tags: '\n'.join(tags),
                                   "Каротин": lambda tags: '\n'.join(tags),
-                                  "Ретин": lambda tags: '\n'.join(tags),
+                                  "Ретиноловый экв.": lambda tags: '\n'.join(tags),
                                   "Тиамин": lambda tags: '\n'.join(tags),
                                   "Рибофлавин": lambda tags: '\n'.join(tags),
                                   "Ниацин": lambda tags: '\n'.join(tags),
                                   "Аскорбиновая кисл.": lambda tags: '\n'.join(tags),
-                                  "Холестерин": lambda tags: '\n'.join(tags)})
+                                  "Холестерин": lambda tags: '\n'.join(tags),
+                                  "НЖК": lambda tags: '\n'.join(tags),
+                                  "Ниационвый эквивалент": lambda tags: '\n'.join(tags),
+                                  "Токоферол эквивалент": lambda tags: '\n'.join(tags)})
 
         # Физическая активность
         activity1 = pd.DataFrame(L1, columns=['Дата', 'Время', 'Минуты',
                                               'Тип'])
-
+        length1 = str(len(activity1['Время'])+3)
         activity2 = activity1.groupby(['Дата',
                                        'Время']).agg({
                                         'Минуты': lambda tags: '\n'.join(tags),
@@ -917,8 +945,9 @@ def email():
 
         # Создаем общий Excel файл
         # можно добавить options={'strings_to_numbers': True} в writer
-        writer = pd.ExcelWriter('app\\%s.xlsx' %
-                                session["username"], engine='xlsxwriter', options={'strings_to_numbers': True})
+        #THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
+        #my_file = os.path.join(THIS_FOLDER, '%s.xlsx' % session["username"])        
+        writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"], engine='xlsxwriter', options={'strings_to_numbers': True})
         a.to_excel(writer, sheet_name='Приемы пищи')
         activity2.to_excel(writer, sheet_name='Физическая активность',
                            startrow=0, startcol=0)
@@ -927,7 +956,7 @@ def email():
         writer.close()
 
         # Редактируем оформление приемов пищи
-        wb = openpyxl.load_workbook('app\\%s.xlsx' % session['username'])
+        wb = openpyxl.load_workbook('app\\%s.xlsx' % session["username"])
         sheet = wb['Приемы пищи']
         ws = wb.active
         for row in ws.iter_rows():
@@ -938,7 +967,7 @@ def email():
         sheet.column_dimensions['A'].width = 13
         sheet.column_dimensions['B'].width = 13
         sheet.column_dimensions['C'].width = 20
-        sheet.column_dimensions['D'].width = 20
+        sheet.column_dimensions['D'].width = 25
         sheet.column_dimensions['E'].width = 13
         sheet.column_dimensions['F'].width = 50
         sheet.column_dimensions['G'].width = 20
@@ -950,9 +979,12 @@ def email():
         sheet.column_dimensions['M'].width = 20
         sheet.column_dimensions['P'].width = 20
         sheet.column_dimensions['Q'].width = 20
+        sheet.column_dimensions['AA'].width = 20
         sheet.column_dimensions['AC'].width = 20
         sheet.column_dimensions['AE'].width = 20
         sheet.column_dimensions['AF'].width = 20
+        sheet.column_dimensions['AH'].width = 20
+        sheet.column_dimensions['AI'].width = 20
 
         a1 = ws['A1']
         a1.fill = PatternFill("solid", fgColor="FFCC99")
@@ -1018,7 +1050,13 @@ def email():
         ae1.fill = PatternFill("solid", fgColor="FFCC99")
         af1 = ws['AF1']
         af1.fill = PatternFill("solid", fgColor="FFCC99")
-
+        ah1 = ws['AH1']
+        ah1.fill = PatternFill("solid", fgColor="FFCC99")
+        ai1 = ws['AI1']
+        ai1.fill = PatternFill("solid", fgColor="FFCC99")
+        ag1 = ws['AG1']
+        ag1.fill = PatternFill("solid", fgColor="FFCC99")
+                       
         thin_border = Border(left=Side(style='thin'),
                              right=Side(style='thin'),
                              top=Side(style='thin'),
@@ -1035,6 +1073,9 @@ def email():
         ws.insert_rows(1, 2)
 
         length = str(len(a['Микроэлементы'])+3)
+
+
+
         if (len(a['Микроэлементы'])+3) > 3:
             sheet.merge_cells('L4:L%s' % length)
         l4 = ws['L4']
@@ -1044,11 +1085,20 @@ def email():
         sheet.merge_cells('A1:AF1')
         sheet.merge_cells('A2:AF2')
 
+        #length1 = str(len(activity1['Время'])+3)
+        #for b in ['G','H']:
+        #    for i in range(4,((len(a['Микроэлементы'])+4))):
+        #        k=i
+        #        print(k)
+        #        print(b)
+        #        cs = sheet['%s' % b+str(k) ]
+        #        cs.alignment = Alignment(horizontal='left')   
+
         wb.save('app\\%s.xlsx' % session["username"])
         wb.close()
 
         # Форматируем физическую активность как надо
-        wb = openpyxl.load_workbook('app\\%s.xlsx' % session['username'])
+        wb = openpyxl.load_workbook('app\\%s.xlsx' % session["username"])
         sheet1 = wb['Физическая активность']
 
         for row in sheet1.iter_rows():
@@ -1079,7 +1129,8 @@ def email():
         sheet1.merge_cells('A2:D2')
         sheet1.merge_cells('E2:G2')
 
-        length1 = str(len(activity1['Время'])+3)
+
+
         for row in sheet1['D4:D%s' % length1]:
             for cell in row:
                 cell.alignment = cell.alignment.copy(wrapText=True)
