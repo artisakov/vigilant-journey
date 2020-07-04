@@ -342,11 +342,7 @@ def favour():
             ne = cur.fetchall()
             cur.execute('''SELECT te FROM constant_food
                         WHERE name = ?''', (L1[i],))
-<<<<<<< HEAD
             te = cur.fetchall()
-=======
-            te = cur.fetchall()                                     
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
             for pr in prot:
                 print(pr[0])
             for car in carbo:
@@ -400,20 +396,12 @@ def favour():
             for ne1 in ne:
                 print(ne1[0])
             for te1 in te:
-<<<<<<< HEAD
                 print(te1[0])
             pustoe = ''
             cur.execute("""INSERT INTO favourites
                         VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
                         ?,?,?,?,?,?,?,?,?,?,?,?,?)""", (session['user_id'],
                         week_day,
-=======
-                print(te1[0])                                                
-            pustoe = ''
-            cur.execute("""INSERT INTO favourites
-                        VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,
-                        ?,?,?,?,?,?,?,?,?,?,?,?,?)""", (session['user_id'], week_day,
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
                         date, time, typ, L1[i], libra, index_b, index_a,
                         str(pr[0]), str(car[0]), str(fa[0]), str(energy[0]),
                         pustoe, str(wat[0]), str(md[0]), str(kr1[0]),
@@ -421,13 +409,8 @@ def favour():
                         str(k1[0]), str(ca1[0]), str(mg1[0]), str(p1[0]),
                         str(fe1[0]), str(a1[0]), str(kar1[0]), str(re1[0]),
                         str(b11[0]), str(b21[0]), str(rr1[0]),
-<<<<<<< HEAD
                         str(c1[0]), str(hol1[0]), str(nzhk1[0]),
                         str(ne1[0]), str(te1[0])))
-=======
-                        str(c1[0]), str(hol1[0]),str(nzhk1[0]),
-                        str(ne1[0]),str(te1[0])))
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
             con.commit()
         con.close()
 
@@ -882,23 +865,14 @@ def email():
                                                'Натрий', 'Калий', 'Кальций',
                                                'Магний', 'Фосфор', 'Железо',
                                                'Ретинол', 'Каротин',
-<<<<<<< HEAD
                                                'Ретиноловый экв.', 'Тиамин',
                                                'Рибофлавин',
-=======
-                                               'Ретиноловый экв.', 'Тиамин', 'Рибофлавин',
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
                                                'Ниацин', 'Аскорбиновая кисл.',
                                                'Холестерин',
                                                'НЖК',
                                                'Ниационвый эквивалент',
                                                'Токоферол эквивалент'])
         food_weight = food_weight.drop('День', axis=1)
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
         # Считаем средний уровень микроэлементов
         list_of = ['Масса (в граммах)',
                    'Белки', 'Углеводы', 'Жиры',
@@ -911,11 +885,7 @@ def email():
                    'Ретинол', 'Каротин',
                    'Ретиноловый экв.', 'Тиамин', 'Рибофлавин',
                    'Ниацин', 'Аскорбиновая кисл.',
-<<<<<<< HEAD
                    'Холестерин', 'НЖК',
-=======
-                   'Холестерин','НЖК',
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
                    'Ниационвый эквивалент',
                    'Токоферол эквивалент']
 
@@ -924,11 +894,6 @@ def email():
             exp = pd.to_numeric(food_weight[i])
             mean2.append(exp.mean())
         print('Среднее по дням', mean2)
-<<<<<<< HEAD
-
-=======
-        
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
         a = food_weight.groupby(['Дата',
                                  'Тип',
                                  'Уровень сахара до',
@@ -981,17 +946,11 @@ def email():
 
         # Создаем общий Excel файл
         # можно добавить options={'strings_to_numbers': True} в writer
-<<<<<<< HEAD
         # THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
         # my_file = os.path.join(THIS_FOLDER, '%s.xlsx' % session["username"])
         writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"],
                                 engine='xlsxwriter',
                                 options={'strings_to_numbers': True})
-=======
-        #THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-        #my_file = os.path.join(THIS_FOLDER, '%s.xlsx' % session["username"])        
-        writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"], engine='xlsxwriter', options={'strings_to_numbers': True})
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
         a.to_excel(writer, sheet_name='Приемы пищи')
         activity2.to_excel(writer, sheet_name='Физическая активность',
                            startrow=0, startcol=0)
@@ -1100,11 +1059,6 @@ def email():
         ai1.fill = PatternFill("solid", fgColor="FFCC99")
         ag1 = ws['AG1']
         ag1.fill = PatternFill("solid", fgColor="FFCC99")
-<<<<<<< HEAD
-
-=======
-                       
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
         thin_border = Border(left=Side(style='thin'),
                              right=Side(style='thin'),
                              top=Side(style='thin'),
@@ -1122,11 +1076,6 @@ def email():
 
         length = str(len(a['Микроэлементы'])+3)
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
         if (len(a['Микроэлементы'])+3) > 3:
             sheet.merge_cells('L4:L%s' % length)
         l4 = ws['L4']
@@ -1136,7 +1085,6 @@ def email():
         sheet.merge_cells('A1:AF1')
         sheet.merge_cells('A2:AF2')
 
-<<<<<<< HEAD
         # length1 = str(len(activity1['Время'])+3)
         # for b in ['G','H']:
         #     for i in range(4,((len(a['Микроэлементы'])+4))):
@@ -1145,16 +1093,6 @@ def email():
         #         print(b)
         #         cs = sheet['%s' % b+str(k) ]
         #         cs.alignment = Alignment(horizontal='left')
-=======
-        #length1 = str(len(activity1['Время'])+3)
-        #for b in ['G','H']:
-        #    for i in range(4,((len(a['Микроэлементы'])+4))):
-        #        k=i
-        #        print(k)
-        #        print(b)
-        #        cs = sheet['%s' % b+str(k) ]
-        #        cs.alignment = Alignment(horizontal='left')   
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
 
         wb.save('app\\%s.xlsx' % session["username"])
         wb.close()
@@ -1191,11 +1129,6 @@ def email():
         sheet1.merge_cells('A2:D2')
         sheet1.merge_cells('E2:G2')
 
-<<<<<<< HEAD
-=======
-
-
->>>>>>> d25a6c7fa0201c9c00cb9cb5c32c4ab83e8e97cb
         for row in sheet1['D4:D%s' % length1]:
             for cell in row:
                 cell.alignment = cell.alignment.copy(wrapText=True)
