@@ -30,7 +30,7 @@ numpy==1.17.4
 openpyxl==3.0.3
 pandas==0.25.3
 pbr==5.4.4
-post==2019.4.13
+
 public==2019.4.13
 pycodestyle==2.5.0
 pyflakes==2.1.1
