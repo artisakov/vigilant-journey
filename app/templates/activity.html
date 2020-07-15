@@ -5,48 +5,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
-    <style type="text/css">
-        .desk_activity {
-            display: flex;
-            justify-content: left;
-            align-items: flex-start;
-            flex-direction: row;
-        }
-
-        #table1 {
-            width: 32rem;
-        }
-
-        @media only screen and (max-device-width: 420px) {
-            .desk_activity {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-            }
-
-            #table1 {
-                width: 26rem;
-            }
-
-        }
-
-        @media only screen and (max-device-width: 360px) {
-            .desk_activity {
-                display: flex;
-                justify-content: center;
-                align-items: center;
-                flex-direction: column;
-            }
-
-            #table1 {
-                width: 25rem;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.21/css/jquery.dataTables.min.css">
 </head>
-
-</html>
 
 <body style="margin: 0; padding: 0;">
     <header style="height: 60px;">
@@ -75,62 +35,65 @@
             </div>
         </nav>
     </header>
-    <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
-        <div class='desk_activity'>
-            <form id='add' method="POST" action="/add_activity">
-                <div class="input-group m-3">
-                    <div class="input-group-prepend">
-                        <label id='timer1' class="input-group-text" for="timer" style='width: 73.6px;'>Время</label>
-                    </div>
-                    <input type="time" name="timer" value="" id="timer">
-                </div>                
-                <div class="input-group m-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="inputGroupSelect01">Занятие</label>
-                    </div>
-                    <select class="custom-select-sm-6" id="inputGroupSelect01" name='type1'>
-                        <option selected value="1">Ходьба</option>
-                        <option value="2">Зарядка</option>
-                        <option value="3">Спорт</option>
-                        <option value="4">Уборка</option>
-                        <option value="5">Работа в саду</option>
-                        <option value="6">Сон</option>
-                    </select>
+
+    <div class="container mt-5">
+        <form id='add' method="POST" action="/add_activity">
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label id='timer1' class="input-group-text" for="timer" style='width: 73.6px;'>Время</label>
                 </div>
-                <div class="input-group m-3">
-                    <div class="input-group-prepend">
-                        <label class="input-group-text" for="min" id='measure1'>Кол-во мин.</label>
-                    </div>
-                    <input type="number" name="min" value="" id="min" style="width: 6.15rem;">
+                <input type="time" name="timer" value="" id="timer">
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="inputGroupSelect01">Занятие</label>
                 </div>
-                <button form="add" type="submit" class="btn btn-outline-primary ml-3">Сохранить</button>
-                <button form="remove" type="submit" class="btn btn-outline-primary ml-3">Удалить</button>
-            </form>
-            <form id='remove' method="POST" action="/remove">
-                <table id='table1' class='table table-hover mt-3'>
-                    <thead class="thead-dark">
-                        <tr>
-                            <th scope='col'>Дата</th>
-                            <th scope='col'>Время</th>
-                            <th abbr="Длит." scope='col'>Минуты</th>
-                            <th scope='col'>Тип нагрузки</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for row in Act %}
-                        <tr>
-                            <td>{{row[0]}}</td>
-                            <td>{{row[1]}}</td>
-                            <td>{{row[2]}}</td>
-                            <td><input id="{{row[3]}}" name="selected" class="checkbox" style="margin-right: 0.5rem;"
-                                    type="checkbox" value="{{row[0]}}/{{row[1]}}/{{row[2]}}/{{row[3]}}">{{row[3]}}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <select class="custom-select-sm-6" id="inputGroupSelect01" name='type1'>
+                    <option selected value="1">Ходьба</option>
+                    <option value="2">Зарядка</option>
+                    <option value="3">Спорт</option>
+                    <option value="4">Уборка</option>
+                    <option value="5">Работа в саду</option>
+                    <option value="6">Сон</option>
+                </select>
+            </div>
+            <div class="input-group mb-3">
+                <div class="input-group-prepend">
+                    <label class="input-group-text" for="min" id='measure1'>Кол-во мин.</label>
+                </div>
+                <input type="number" name="min" value="" id="min" style="width: 6.15rem;">
+            </div>
+            <button form="add" type="submit" class="btn btn-outline-primary">Сохранить</button>
+            <button form="remove" type="submit" class="btn btn-outline-primary ml-3">Удалить</button>
+        </form>
+        <div class="table-responsive mt-3">
+            <form id='remove' method="POST" action="/remove"></form>
+            <table class="table table-striped table-bordered table-hover">
+                <thead class="thead-dark">
+                    <tr>
+                        <th scope='col' style='white-space:nowrap;'>Дата</th>
+                        <th scope='col' style='white-space:nowrap;'>Начало</th>
+                        <th abbr="Длит." scope='col' style='white-space:nowrap;'>Время</th>
+                        <th scope='col' style='white-space:nowrap;'>Нагрузка</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for row in Act %}
+                    <tr>
+                        <td>{{row[0]}}</td>
+                        <td>{{row[1]}}</td>
+                        <td>{{row[2]}}</td>
+                        <td style='white-space:nowrap;'><input id="{{row[3]}}" name="selected" class="checkbox"
+                                style="margin-right: 0.5rem;" type="checkbox"
+                                value="{{row[0]}}/{{row[1]}}/{{row[2]}}/{{row[3]}}">{{row[3]}}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
             </form>
         </div>
     </div>
+
     <script src="https://code.jquery.com/jquery-3.4.1.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
         integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
@@ -138,6 +101,10 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.datatables.net/1.10.21/js/jquery.dataTables.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous">
+        </script>
     <script type="text/javascript">
         select = document.getElementsByClassName('custom-select-sm-6')[0]
         select.onchange = function () {
@@ -146,4 +113,7 @@
             } else { $('#measure1').text('Кол-во мин.') }
         }
     </script>
+
 </body>
+
+</html>

@@ -832,8 +832,17 @@ def email():
         cur.execute('''SELECT date,type,index_b,index_a FROM favourites
                        GROUP BY date,type,index_a,index_b''')
         L3 = cur.fetchall()
-        con.close()
+        cur.execute('''SELECT DISTINCT date FROM
+                        favourites WHERE user_id = ?''', (session['user_id'],))
+        date = cur.fetchall()
 
+        for d in date:
+            print(d[0])                    
+            cur.execute('''SELECT avg(water), avg(prot), avg(fat) FROM favourites
+                           WHERE date = ?''', d)
+            avg = cur.fetchall()
+            print(avg[0])   
+        con.close()      
         # Считаем средний уровень сахара
         c = []
         for i in range(len(L3)):
@@ -950,7 +959,9 @@ def email():
         # my_file = os.path.join(THIS_FOLDER, '%s.xlsx' % session["username"])
         writer = pd.ExcelWriter('app\\%s.xlsx' % session["username"],
                                 engine='xlsxwriter',
-                                options={'strings_to_numbers': True})
+                                options={'strings_to_numbers': True,
+                                         'default_date_format': 'dd/mm/yy',
+                                         'nan_inf_to_errors': True})
         a.to_excel(writer, sheet_name='Приемы пищи')
         activity2.to_excel(writer, sheet_name='Физическая активность',
                            startrow=0, startcol=0)
@@ -1085,6 +1096,16 @@ def email():
         sheet.merge_cells('A1:AF1')
         sheet.merge_cells('A2:AF2')
 
+        length2 = str(len(a['Микроэлементы'])+5)
+        ws['A%s' % length2] = 'Срденее за период'
+        sheet.merge_cells('A%s:B%s' % (length2,length2))
+        ws['C%s' % length2 ] = mean_index_b
+        ws['D%s' % length2 ] = mean_index_a
+        i = 0
+        for c in ['G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z','AA','AB','AC','AD','AE','AF','AG','AH','AI']:
+            print(f'{c}%s' % length2 +' ' +str(mean2[i]))
+            ws[f'{c}%s' % length2] = str(mean2[i])
+            i = i+1
         # length1 = str(len(activity1['Время'])+3)
         # for b in ['G','H']:
         #     for i in range(4,((len(a['Микроэлементы'])+4))):

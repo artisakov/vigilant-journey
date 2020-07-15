@@ -4,11 +4,12 @@
 <head>
         <title>Главная страница</title>
         <base href="http://127.0.0.1:5000/">
-        <meta charset="UTF-8">
+        <meta charset="UTF-8"/>
+        <meta meta name='viewport' content='width=device-width, user-scalable=no'/>
         <link rel="stylesheet" href="static/style.css">
 </head>
 
-<body>
+<body style='overflow: scroll;'>
         <header>
                 <nav id='topmenu'>
                         <a class='intop' href="{{ url_for('login') }}">войти</a>

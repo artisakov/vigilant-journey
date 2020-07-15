@@ -3,16 +3,19 @@
 
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+  <meta meta name='viewport' content='width=device-width, user-scalable=no' />
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css">
   <style type='text/css'>
-    @media only screen and (max-device-width: 768px) {
-      #vne {
-        display: none !important;
+    @media only screen and (max-width: 991px) {
+      #pole {
+        display: flex !important;
+        flex-direction: column !important;
+        align-items: center !important;
+        justify-items: center !important;
       }
-
-      #vnutri {
-        display: inline-block !important;
+      body {
+        min-width: 405px;
       }
     }
   </style>
@@ -41,25 +44,16 @@
             <a class="nav-link" href="{{ url_for('logout') }}">Выйти</a>
           </li>
         </ul>
-        <form class="form-inline" action="/email" method="POST" id='vnutri' style='display: none;'>
-          <input class="form-control" type="search" placeholder="@Email" aria-label="Search" name="email_sendto"
-            required style='margin-top:10px; margin-right: 10px;'>
-          <input class="form-control" type="search" placeholder="@Email" aria-label="Search" name="email_sendto"
-            style='margin-top:10px; margin-right: 10px;'>
-          <button class="btn btn-danger" style='margin-top:10px;' type="submit">Отправить</button>
+        <form class="form-inline my-2 my-lg-0" action="/email" method="POST">
+          <input class="form-control mr-sm-2" type="search" placeholder="@Email" aria-label="Search" name="email_sendto"
+            required>
+          <button class="btn btn-success my-2 my-sm-0" type="submit">Отправить</button>
         </form>
       </div>
-      <form class="form-inline" action="/email" method="POST" id='vne'>
-        <input class="form-control" type="search" placeholder="@Email" aria-label="Search" name="email_sendto" required
-          style='margin-right: 10px;'>
-        <input class="form-control" type="search" placeholder="@Email" aria-label="Search" name="email_sendto"
-          style='margin-right: 10px;'>
-        <button class="btn btn-danger" type="submit">Отправить</button>
-      </form>
     </nav>
   </header>
 
-  <div style="display: flex; flex-direction: column; align-items: center; justify-content: center;">
+  <div id='pole' style="display: grid; grid-template-columns: 1fr 1fr 1fr; grid-row-gap: 1.5rem; grid-column-gap: 7rem;">
     <div class="card m-3 h-100" style="width: 25rem;">
       <img src="static/images/img1.jpg" class="card-img-top">
       <div class="card-body">
