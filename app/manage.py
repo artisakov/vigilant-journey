@@ -2,8 +2,6 @@ from flask import Flask, render_template, request, redirect, url_for, session
 from flask_mail import Mail, Message
 import sqlite3
 import os
-import get 
-import post
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
 from wtforms import StringField, PasswordField, BooleanField
