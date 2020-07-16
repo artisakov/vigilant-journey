@@ -88,6 +88,7 @@ def zero():
 def news():
     # Главная страница
     session['username'] = current_user.username
+    session['user_id'] = current_user.id
     session['date'] = datetime.datetime.today().date()
     return render_template("news.html", name=session['username'])
 
